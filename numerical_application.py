@@ -102,7 +102,7 @@ def exact_sdf_beta_prime_gamma(tau, g, beta_prime, alpha, beta,
     return discount_rate
 
 
-def x_axis_from(series, n_steps_min=200):
+def x_axis_from_series(series, n_steps_min=200):
     series = series.dropna()
     max_value = series.max()
     axis = np.linspace(0, max_value, n_steps_min)
@@ -114,6 +114,28 @@ def x_axis_from(series, n_steps_min=200):
 
 
 def merge_value_frequency(df_x, col_x, df_y, col_y):
+    """
+    Add frequencies of ``df_x`` values observed in ``df_y``.
+
+    Parameters
+    ----------
+    df_x : DataFrame
+        DataFrame containing a list of unique values.
+    col_x : str
+        Name of the column of ``df_x`` containing a list of unique values.
+    df_y : DataFrame
+        DataFrame containing a list of observations
+    col_y : str
+        Name of the column of ``df_y`` containing a list of observations.
+
+
+    Returns
+    -------
+    DataFrame
+        ``df_x`` with an additional column called "freq_" + ``col_y``,
+        containing the frequency of each unique value of ``col_x`` observed in
+        ``col_y``.
+    """
     df = (
         df_y
         .loc[:, col_y]
@@ -236,8 +258,8 @@ drupp_2018_df = (drupp_2018_df
 drupp_2018_df.head()
 
 # %% Prepare dataframes for the charts
-df_delta = pd.DataFrame({'x_delta': x_axis_from(drupp_2018_df.delta)})
-df_eta   = pd.DataFrame({'x_eta':   x_axis_from(drupp_2018_df.eta  )})
+df_delta = pd.DataFrame({'x_delta': x_axis_from_series(drupp_2018_df.delta)})
+df_eta   = pd.DataFrame({'x_eta':   x_axis_from_series(drupp_2018_df.eta  )})
 
 df_delta = merge_value_frequency(df_delta, "x_delta", drupp_2018_df, "delta")
 df_eta   = merge_value_frequency(df_eta, "x_eta", drupp_2018_df, "eta")
