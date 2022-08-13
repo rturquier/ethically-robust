@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Produce plots for "Long-run discounting is ethically robust".
+Code used for the internship report
 
 Required files: Dataset_Stata11compatible.dta (Drupp et al. 2018)
 
@@ -16,12 +16,11 @@ https://doi.org/10.3886/E114692V1
 """
 
 # %% =======================   Setup   =========================
-import itertools
 import numpy as np
 import pandas as pd
 import scipy.stats as stats
-
 import altair as alt
+
 
 # %% ======================= Functions =========================
 def ramsey_beta_prime_gamma(tau, g, beta_prime, alpha, beta,
@@ -231,18 +230,6 @@ def line_chart(df, x, y, x_title=False, y_title=False, x_format="~f",
     return chart
 
 
-def melt_parameter_grid(parameter_grid):
-    """Convert a parameter grid to a tidy df with all possible combinations."""
-
-    parameter_names = parameter_grid.keys()
-    every_possible_combination = itertools.product(*parameter_grid.values())
-
-    df = pd.DataFrame(every_possible_combination, columns=parameter_names)
-
-    return df
-
-
-
 # %% ======================= Main code =========================== #
 # %% Import data from Drupp et al. (2018)
 drupp_2018_data_path = "114692-V1/data/Dataset_Stata11compatible.dta"
@@ -295,7 +282,7 @@ print(beta_prime_MLE, fit_alpha, fit_beta, sep="\n")
 # %% Estimate parameters with method of moments (MM)
 # Beta prime distribution
 m = drupp_2018_df.delta.mean()
-beta_prime_MM = 1 / m + 1
+beta_prime_MM = 1 + 1 / m
 
 # Gamma distribution
 mu     = drupp_2018_df.eta.mean()
@@ -324,7 +311,7 @@ df_eta = df_eta.assign(
                  )
     .properties(title={"text": "Distribution of beliefs over \u03b4",
                        "subtitle": "Fit with maximum likelihood estimation"})
-    # .save("delta_MLE.html")
+    .save("charts/delta_MLE.html")
 )
 
 
@@ -334,7 +321,7 @@ df_eta = df_eta.assign(
                  )
     .properties(title={"text": "Distribution of beliefs over \u03b4",
                        "subtitle": "Fit with method of moments"})
-    # .save("delta_MM.html")
+    .save("charts/delta_MM.html")
 )
 
 
@@ -344,7 +331,7 @@ df_eta = df_eta.assign(
                   bin_step=0.4)
     .properties(title={"text": "Distribution of beliefs over \u03b7",
                        "subtitle": "Fit with maximum likelihood estimation"})
-    #.save("eta_MLE.html")
+    .save("charts/eta_MLE.html")
 )
 
 
@@ -353,7 +340,7 @@ df_eta = df_eta.assign(
                   bin_step=0.4)
     .properties(title={"text": "Distribution of beliefs over \u03b7",
                        "subtitle": "Fit with method of moments"})
-    #.save("eta_MM.html")
+    .save("charts/eta_MM.html")
 )
 
 
@@ -443,122 +430,3 @@ legend_dict = {
 # %% plot ratio of factors
 df_sdr.pipe(line_chart, "year", "sdf_ratio", color="#b12447"
 ).save("current_chart.html")
-
-
-
-# %% ==== preparations for an interactive plot ====
-# %% parameter grid
-
-parameter_grid = {
-    "alpha"     : np.linspace(2.1, 3, 10).round(1),
-    "beta"      : np.linspace(2.1, 3, 10).round(1),
-    'beta_prime': np.linspace(50, 100, 6).round(0),
-    "g"         : [0.02]
-}
-
-
-
-parameter_df = melt_parameter_grid(parameter_grid)
-
-
-# %% dataframes
-df_eta_interactive = (
-    parameter_df
-    .loc[:, ["alpha", "beta"]]
-    .drop_duplicates()
-    .merge(df_eta, how="cross")
-    .assign(
-        pdf_eta=lambda r:
-            stats.gamma(a=r.alpha, scale=1 / r.beta).pdf(r.x_eta)
-    )
-)
-
-
-df_delta_interactive = (
-    parameter_df
-    .loc[:, ["beta_prime"]]
-    .drop_duplicates()
-    .merge(df_delta, how="cross")
-    .assign(
-        pdf_delta=lambda r: stats.betaprime(1, r.beta_prime).pdf(r.x_delta)
-    )
-)
-
-
-df_sdr_interactive = (
-    pd.DataFrame()
-    .assign(year=np.linspace(0, 10000, 100))
-    .merge(parameter_df, how="cross")
-    .assign(
-        y_sdr=lambda r: ramsey_beta_prime_gamma(
-            tau=r.year, g=r.g,
-            beta_prime=r.beta_prime, alpha=r.alpha, beta=r.beta
-        )
-    )
-)
-
-# %% Plot test
-alt.data_transformers.disable_max_rows()
-
-# %% selections
-def make_slider(parameter_grid, parameter_name, step):
-    slider = alt.binding_range(min=min(parameter_grid[parameter_name]),
-                               max=max(parameter_grid[parameter_name]),
-                               step=step)
-    return slider
-
-def slider_select(parameter_grid, parameter_name, step, init):
-    slider = make_slider(parameter_grid, parameter_name, step)
-    selection = alt.selection_single(
-        name=parameter_name, fields=[parameter_name],
-        bind=slider, init={parameter_name: init}
-    )
-    return selection
-
-select_alpha      = slider_select(parameter_grid, "alpha", step=0.1, init=2.4)
-select_beta       = slider_select(parameter_grid, "beta", step=0.1, init=2.5)
-select_beta_prime = slider_select(parameter_grid, "beta_prime", step=10,
-                                  init=90)
-
-
-# %% sub-plots
-interactive_delta = (
-    density_chart(df_delta_interactive, x="x_delta", freq="freq_delta",
-                  pdf="pdf_delta_MM", bin_step=0.004, x_format="%"
-                 )
-    .properties(title="Distribution of beliefs over \u03b4")
-    .add_selection(select_beta_prime)
-    .transform_filter(select_beta_prime)
-    .properties(title="Distribution of beliefs over \u03b4")
-)
-
-interactive_delta.save("current_chart.html")
-interactive_eta = (
-    density_chart(df_eta_interactive,
-                  x="x_eta", freq="freq_eta", pdf="pdf_eta", bin_step=0.4)
-    .add_selection(select_alpha, select_beta)
-    .transform_filter(select_alpha)
-    .transform_filter(select_beta)
-    .properties(title="Distribution of beliefs over \u03b7")
-)
-
-
-interactive_sdr = (
-    alt.Chart(df_sdr_interactive)
-    .mark_line(strokeWidth=3)
-    .encode(x=alt.X("year:Q", axis=alt.Axis(title="Years")),
-            y=alt.Y("y_sdr:Q", axis=alt.Axis(title="Social discount rate",
-                                                     format="%")
-                   ),
-           )
-    .properties(title="Long-run social discount rate under normative uncertainty")
-    .add_selection(select_alpha, select_beta, select_beta_prime)
-    .transform_filter(select_alpha)
-    .transform_filter(select_beta)
-    .transform_filter(select_beta_prime)
-    .interactive(bind_x=False)
-)
-
-# %% combine subplots
-interactive_plot = ((interactive_delta | interactive_eta) & interactive_sdr)
-interactive_plot.save('current_chart_svg.html', embed_options={'renderer':'svg'})
