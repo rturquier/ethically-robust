@@ -151,7 +151,7 @@ def merge_value_frequency(df_x, col_x, df_y, col_y):
 
 
 def density_chart(df, x, freq, pdf, bin_step=1, x_format="~f"):
-    """Plot a histogram and with a fitted probability density function."""
+    """Plot a histogram with a fitted probability density function."""
 
     bar_color  = alt.value("#8FBC8F")
     line_color = alt.value("#008B8B")
