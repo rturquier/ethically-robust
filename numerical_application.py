@@ -195,9 +195,9 @@ def dict_to_labelExpr(legend_dict):
 
 
 def line_chart(df, x, y, x_title=False, y_title=False, x_format="~f",
-               y_format="~f", title="", subtitle="", color="#1f77b4",
-               strokeDash=[1, 0], multi=False, legend=alt.Legend(),
-               legend_order=None):
+               y_format="~f", y_scale=alt.Scale(), title="", subtitle="",
+               color="#1f77b4", strokeDash=[1, 0], multi=False,
+               legend=alt.Legend(), legend_order=None):
     """Plot a simple line chart."""
 
     if x_title == False:
@@ -210,7 +210,8 @@ def line_chart(df, x, y, x_title=False, y_title=False, x_format="~f",
         .mark_line()
         .encode(
             x=alt.X(x, axis=alt.Axis(title=x_title, format=x_format)),
-            y=alt.Y(y, axis=alt.Axis(title=y_title, format=y_format))
+            y=alt.Y(y, axis=alt.Axis(title=y_title, format=y_format),
+                    scale=y_scale)
         )
         .properties(title={"text": title, "subtitle": subtitle})
     )
@@ -372,14 +373,17 @@ df_sdr = (
 # %% Plot relative approximation error
 (
     df_sdr
-    .pipe(line_chart, x="year", y="sdr_uncertain_error")
-    .save("charts/current_chart.html")
+    .pipe(line_chart, x="year", y="sdr_uncertain_error",
+          x_title="Year",
+          y_title="Relative approximation error", y_format="%")
+    .properties(width=600, height=300)
+    .save("charts/relative_approximation_error.html")
 )
 
 # %% Plot of social discount rate
 legend_dict = {
     "sdr_certain_ramsey": "Standard Ramsey formula",
-    "sdr_uncertain_exact": "Expected choice-worthiness"
+    "sdr_uncertain_approx": "Expected choice-worthiness"
 }
 
 (
@@ -397,12 +401,12 @@ legend_dict = {
             labelExpr=dict_to_labelExpr(legend_dict),
             orient="bottom"
         ),
-        x_title="Years",
+        x_title="Year",
         y_title="Social discount rate",
         y_format="%"
     )
     .properties(width=600, height=300)
-    .save("charts/current_chart.html")
+    .save("charts/social_discount_rate.html")
 )
 
 # %% Plot social discount factor
@@ -427,14 +431,24 @@ legend_dict = {
             labelExpr=dict_to_labelExpr(legend_dict),
             orient="bottom"
         ),
-        x_title="Years",
-        y_title="Social discount rate",
+        x_title="Year",
+        y_title="Social discount factor",
         y_format="%"
     )
     .properties(width=600, height=300)
-    .save("current_chart.html")
+    .save("charts/social_discount_factor.html")
 )
 
 # %% plot ratio of factors
-df_sdr.pipe(line_chart, "year", "sdf_ratio", color="#b12447"
-).save("current_chart.html")
+(
+    df_sdr
+    .pipe(
+        line_chart, x="year", y="sdf_ratio",
+        y_scale=alt.Scale(type="log"),
+        x_title="Year",
+        y_title="Morally uncertain discount factor over standard factor",
+        color="#b12447"
+    )
+    .properties(width=600, height=300)
+    .save("charts/discount_factor_ratio.html")
+)
