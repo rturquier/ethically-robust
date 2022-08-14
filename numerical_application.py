@@ -358,7 +358,8 @@ df_sdr = (
             alpha=gamma_MM_shape, beta=1 / gamma_MM_scale
         ),
         sdr_uncertain_error=lambda r:
-            r.sdr_uncertain_exact - r.sdr_uncertain_approx,
+            (r.sdr_uncertain_exact - r.sdr_uncertain_approx)
+            / r.sdr_uncertain_approx,
         sdr_certain_ramsey= ramsey(delta=m, eta=mu, g=0.02),
         sdf_uncertain=lambda r:
             sdr_to_sdf(r.sdr_uncertain_exact, r.year),
@@ -366,6 +367,13 @@ df_sdr = (
             sdr_to_sdf(r.sdr_certain_ramsey, r.year),
         sdf_ratio=lambda r: r.sdf_uncertain / r.sdf_certain
     )
+)
+
+# %% Plot relative approximation error
+(
+    df_sdr
+    .pipe(line_chart, x="year", y="sdr_uncertain_error")
+    .save("charts/current_chart.html")
 )
 
 # %% Plot of social discount rate
@@ -376,7 +384,7 @@ legend_dict = {
 
 (
     df_sdr
-    .loc[:, ["year", "sdr_certain_ramsey", "sdr_uncertain_exact"]]
+    .loc[:, ["year", "sdr_certain_ramsey", "sdr_uncertain_approx"]]
     .melt("year")
     .pipe(
         line_chart, x="year", y="value",
@@ -394,7 +402,7 @@ legend_dict = {
         y_format="%"
     )
     .properties(width=600, height=300)
-    .save("current_chart.html")
+    .save("charts/current_chart.html")
 )
 
 # %% Plot social discount factor
