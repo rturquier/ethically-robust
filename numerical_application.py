@@ -433,6 +433,7 @@ legend_dict = {
         ),
         x_title="Year",
         y_title="Social discount factor",
+        y_scale=alt.Scale(type="log"),
         y_format="%"
     )
     .properties(width=600, height=300)
