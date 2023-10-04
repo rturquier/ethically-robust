@@ -257,7 +257,7 @@ df_delta.head()
 # %% Correct null values of eta to estimate the distribution of Eta
 # 0 is not in the support of the gamma distribution.
 # Null values of eta are replaced with an arbitrarily low value.
-epsilon = 1E-9
+epsilon = 1E-15
 
 drupp_2018_df = drupp_2018_df.assign(
     eta=lambda x: np.where(x.eta == 0, epsilon, x.eta)
