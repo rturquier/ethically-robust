@@ -98,7 +98,7 @@ def exact_sdf_beta_prime_gamma(tau, g, beta_prime, alpha, beta,
     sdr = exact_sdr_beta_prime_gamma(tau, g, beta_prime, alpha, beta,
                                      alpha_prime, c_0)
     discount_factor = sdr_to_sdf(sdr, tau)
-    return discount_rate
+    return discount_factor
 
 
 def x_axis_from_series(series, n_steps_min=200):
