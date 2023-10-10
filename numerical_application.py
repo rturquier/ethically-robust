@@ -98,7 +98,7 @@ def exact_sdf_beta_prime_gamma(tau, g, beta_prime, alpha, beta,
     sdr = exact_sdr_beta_prime_gamma(tau, g, beta_prime, alpha, beta,
                                      alpha_prime, c_0)
     discount_factor = sdr_to_sdf(sdr, tau)
-    return discount_rate
+    return discount_factor
 
 
 def x_axis_from_series(series, n_steps_min=200):
@@ -149,7 +149,7 @@ def merge_value_frequency(df_x, col_x, df_y, col_y):
     return df
 
 
-def density_chart(df, x, freq, pdf, bin_step=1, x_format="~f"):
+def density_chart(df, x, freq, pdf, bin_step=1, x_format="~f", ):
     """Plot a histogram with a fitted probability density function."""
 
     bar_color  = alt.value("#8FBC8F")
@@ -159,7 +159,10 @@ def density_chart(df, x, freq, pdf, bin_step=1, x_format="~f"):
     bar_scale = 'datum.' + freq + ' / ' + str(bin_step)
     bar_y     = alt.Y('sum(freq_scaled):Q', axis=alt.Axis(title=""))
 
-    line_x = alt.X(x,   axis=alt.Axis(title="value", format=x_format))
+    line_x = alt.X(
+        x,
+        axis=alt.Axis(title="value", format=x_format, labelFlush=False)
+    )
     line_y = alt.Y(pdf, axis=alt.Axis(title="density"), type="quantitative")
 
 
@@ -175,8 +178,16 @@ def density_chart(df, x, freq, pdf, bin_step=1, x_format="~f"):
         base.mark_line()
         .encode(x=line_x, y=line_y, color=line_color)
     )
+    
+    complete_chart = (
+        (bar + line)
+        .properties(
+            width=220,
+            height=150
+        )
+    )
 
-    return bar + line
+    return complete_chart
 
 
 def dict_to_labelExpr(legend_dict):
@@ -205,13 +216,23 @@ def line_chart(df, x, y, x_title=False, y_title=False, x_format="~f",
     if y_title == False:
         y_title = y
 
+    line_chart_x_axis = alt.Axis(
+        title=x_title,
+        format=x_format,
+        titlePadding=5
+    )
+    line_chart_y_axis = alt.Axis(
+        title=y_title,
+        format=y_format,
+        titlePadding=10
+    )
+
     chart = (
         alt.Chart(df)
         .mark_line()
         .encode(
-            x=alt.X(x, axis=alt.Axis(title=x_title, format=x_format)),
-            y=alt.Y(y, axis=alt.Axis(title=y_title, format=y_format),
-                    scale=y_scale)
+            x=alt.X(x, axis=line_chart_x_axis),
+            y=alt.Y(y, axis=line_chart_y_axis, scale=y_scale)
         )
         .properties(title={"text": title, "subtitle": subtitle})
     )
@@ -308,7 +329,7 @@ df_eta = df_eta.assign(
 # %% Density charts - delta
 (
     density_chart(df_delta, x="x_delta", freq="freq_delta",
-                  pdf="pdf_delta_MLE", bin_step=0.004, x_format="%"
+                  pdf="pdf_delta_MLE", bin_step=0.005, x_format="~%"
                  )
     .properties(title={"text": "Distribution of beliefs over \u03b4",
                        "subtitle": "Fit with maximum likelihood estimation"})
@@ -318,18 +339,18 @@ df_eta = df_eta.assign(
 
 (
     density_chart(df_delta, x="x_delta", freq="freq_delta",
-                  pdf="pdf_delta_MM", bin_step=0.004, x_format="%"
+                  pdf="pdf_delta_MM", bin_step=0.005, x_format="~%"
                  )
-    .properties(title={"text": "Distribution of beliefs over \u03b4",
-                       "subtitle": "Fit with method of moments"})
-    .save("charts/delta_MM.html")
+    # .properties(title={"text": "Distribution of beliefs over \u03b4",
+    #                    "subtitle": "Fit with method of moments"})
+    .save("charts/delta_MM.svg")
 )
 
 
 # %% Density charts - eta
 (
     density_chart(df_eta, x="x_eta", freq="freq_eta", pdf="pdf_eta_MLE",
-                  bin_step=0.4)
+                  bin_step=0.5)
     .properties(title={"text": "Distribution of beliefs over \u03b7",
                        "subtitle": "Fit with maximum likelihood estimation"})
     .save("charts/eta_MLE.html")
@@ -338,10 +359,10 @@ df_eta = df_eta.assign(
 
 (
     density_chart(df_eta, x="x_eta", freq="freq_eta", pdf="pdf_eta_MM",
-                  bin_step=0.4)
-    .properties(title={"text": "Distribution of beliefs over \u03b7",
-                       "subtitle": "Fit with method of moments"})
-    .save("charts/eta_MM.html")
+                  bin_step=0.5)
+    # .properties(title={"text": "Distribution of beliefs over \u03b7",
+    #                    "subtitle": "Fit with method of moments"})
+    .save("charts/eta_MM.svg")
 )
 
 
@@ -377,13 +398,13 @@ df_sdr = (
           x_title="Year",
           y_title="Relative approximation error", y_format="%")
     .properties(width=600, height=300)
-    .save("charts/relative_approximation_error.html")
+    .save("charts/relative_approximation_error.svg")
 )
 
 # %% Plot of social discount rate
 legend_dict = {
     "sdr_certain_ramsey": "Standard Ramsey formula",
-    "sdr_uncertain_approx": "Expected choice-worthiness"
+    "sdr_uncertain_approx": "Ramsey formula with moral uncertainty"
 }
 
 (
@@ -395,18 +416,20 @@ legend_dict = {
         color="variable",
         strokeDash="variable",
         multi=True,
-        title = "Long-run social discount rate",
+        # title = "Long-run social discount rate",
         legend=alt.Legend(
             title=None,
             labelExpr=dict_to_labelExpr(legend_dict),
-            orient="bottom"
+            orient="bottom",
+            direction="vertical",
+            labelLimit=30000
         ),
         x_title="Year",
         y_title="Social discount rate",
         y_format="%"
     )
     .properties(width=600, height=300)
-    .save("charts/social_discount_rate.html")
+    .save("charts/social_discount_rate.svg")
 )
 
 # %% Plot social discount factor
