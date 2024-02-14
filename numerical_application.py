@@ -346,6 +346,9 @@ df_eta = df_eta.assign(
 
 
 # %% Prepare the dataframe with the social discount rate (SDR)
+favorite_delta = df_delta.set_index('x_delta').freq_delta.idxmax()
+favorite_eta = df_eta.set_index('x_eta').freq_eta.idxmax()
+
 df_sdr = (
     pd.DataFrame()
     .assign(
@@ -361,12 +364,17 @@ df_sdr = (
         sdr_uncertain_error=lambda r:
             (r.sdr_uncertain_exact - r.sdr_uncertain_approx)
             / r.sdr_uncertain_approx,
-        sdr_certain_ramsey= ramsey(delta=m, eta=mu, g=0.02),
+        sdr_certain_ramsey=ramsey(delta=m, eta=mu, g=0.02),
+        sdr_favorite_theory=ramsey(
+            delta=favorite_delta, eta=favorite_eta, g=0.02
+        ),
         sdf_uncertain=lambda r:
             sdr_to_sdf(r.sdr_uncertain_exact, r.year),
         sdf_certain=lambda r:
             sdr_to_sdf(r.sdr_certain_ramsey, r.year),
-        sdf_ratio=lambda r: r.sdf_uncertain / r.sdf_certain
+        sdf_ratio=lambda r: r.sdf_uncertain / r.sdf_certain,
+        sdf_favorite_theory=lambda r:
+            sdr_to_sdf(r.sdr_favorite_theory, r.year),
     )
 )
 
@@ -382,20 +390,26 @@ df_sdr = (
 
 # %% Plot of social discount rate
 legend_dict = {
-    "sdr_certain_ramsey": "Standard Ramsey formula",
+    "sdr_certain_ramsey": "Average values",
+    "sdr_favorite_theory": "Modal values",
     "sdr_uncertain_approx": "Expected choice-worthiness"
 }
 
 (
     df_sdr
-    .loc[:, ["year", "sdr_certain_ramsey", "sdr_uncertain_approx"]]
+    .loc[:, [
+        "year",
+        "sdr_uncertain_approx",
+        "sdr_certain_ramsey",
+        "sdr_favorite_theory",
+    ]]
     .melt("year")
     .pipe(
         line_chart, x="year", y="value",
         color="variable",
         strokeDash="variable",
         multi=True,
-        title = "Long-run social discount rate",
+        # title = "Long-run social discount rate",
         legend=alt.Legend(
             title=None,
             labelExpr=dict_to_labelExpr(legend_dict),
@@ -411,21 +425,21 @@ legend_dict = {
 
 # %% Plot social discount factor
 legend_dict = {
-    "sdf_certain": "Standard Ramsey formula",
     "sdf_uncertain": "Expected choice-worthiness",
-    "sdf_ratio": "Ratio of discount factors"
+    "sdf_certain": "Average values",
+    "sdf_favorite_theory": "Modal values",
 }
 
 (
     df_sdr
-    .loc[:, ["year", "sdf_certain", "sdf_uncertain"]]
+    .loc[:, ["year", "sdf_uncertain", "sdf_certain", "sdf_favorite_theory"]]
     .melt("year")
     .pipe(
         line_chart, x="year", y="value",
         multi=True,
         color="variable",
         strokeDash="variable",
-        title = "Long-run social discount factor",
+        # title = "Long-run social discount factor",
         legend=alt.Legend(
             title=None,
             labelExpr=dict_to_labelExpr(legend_dict),
@@ -433,7 +447,7 @@ legend_dict = {
         ),
         x_title="Year",
         y_title="Social discount factor",
-        y_scale=alt.Scale(type="log"),
+        # y_scale=alt.Scale(type="log"),
         y_format="%"
     )
     .properties(width=600, height=300)
