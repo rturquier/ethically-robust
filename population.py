@@ -136,7 +136,7 @@ histogram_df = (
 
 chart_base = (
     alt.Chart(histogram_df)
-    .properties(width=400, height=300)
+    .properties(width=550, height=300)
 )
 
 histogram = (
@@ -145,15 +145,25 @@ histogram = (
     .encode(
         x='beta_intersection_lower',
         x2='beta_intersection_upper',
-        y='density'
+        y=alt.Y('density', axis=None)
     )
 )
 
 labels = (
     chart_base
     .transform_filter("datum.interval_length > 0")
-    .mark_text(dy=-5)
-    .encode(x='beta_midpoint', y='density', text='frequency_combined')
+    .mark_text(dy=-8)
+    .encode(
+        x=alt.X(
+            'beta_midpoint',
+            axis=alt.Axis(title="Estimated 𝛽",
+                          values=histogram_df.beta_intersection_upper.values,
+                          format=".2")
+        ),
+        y=alt.Y('density', axis=None),
+        text='frequency_combined'
+    )
 )
-
-# (histogram + labels).save("charts/caviola_3c_beta_histogram.svg")
+(histogram + labels).configure_view(stroke=None)
+# (histogram + labels).configure_view(stroke=None).save("charts/caviola_3c_beta_histogram.svg")
+# %%
