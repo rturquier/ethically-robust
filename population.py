@@ -62,37 +62,79 @@ def get_midpoint(interval:intervals.Interval) -> float:
     return midpoint
 
 
-def infer_beta(study_3c_df: pd.DataFrame) -> pd.DataFrame:
+def intersect_two(left:pd.Series, right:pd.Series) -> pd.Series:
+    df = pd.DataFrame({'left': left, 'right': right})
+    intersection = df.apply(lambda row: row['left'] & row['right'], axis=1)
+    return intersection
+
+
+def intersect(df, interval_column_names:list) -> pd.Series:
+    for i, column_name in enumerate(interval_column_names):
+        if i == 0:
+            left_column = df[column_name]
+            continue
+        elif i == 1:
+            right_column = df[column_name]
+            intersection = intersect_two(left_column, right_column)
+        else:
+            right_column = df[column_name]
+            intersection = intersect_two(intersection, right_column)
+    return intersection
+
+
+def create_intervals(df):
+    df = df.assign(
+        beta_interval_90k = lambda x:
+            get_beta_interval_from_answer(x.t_90, 100_000, 90),
+        beta_interval_70k = lambda x:
+            get_beta_interval_from_answer(x.t_70, 100_000, 70),
+        beta_interval_50k = lambda x:
+            get_beta_interval_from_answer(x.t_50k, 100_000, 50),
+        beta_interval_50m = lambda x:
+            get_beta_interval_from_answer(x.t_50m, 1_000_000, 50),
+        beta_interval_50b = lambda x:
+            get_beta_interval_from_answer(x.t_50b, 1_000_000_000, 50)
+    )
+    return df
+
+
+def get_intersections_and_bounds_and_midpoints(df, question_subsets:dict):
+    for prefix, column_names in question_subsets.items():
+        df[prefix + '_intersection'] = df.pipe(intersect, column_names)
+        
+        df[prefix + '_lower'] = (
+            df[prefix + '_intersection']
+            .apply(lambda x: x.lower if not x.empty else np.nan)
+        )
+        
+        df[prefix + '_upper'] = (
+            df[prefix + '_intersection']
+            .apply(lambda x: x.upper if not x.empty else np.nan)
+        )
+        
+        df[prefix + '_midpoint'] = (
+            df[prefix + '_intersection'].pipe(get_midpoint)
+        )
+    return df
+
+
+def process(study_3c_df: pd.DataFrame) -> pd.DataFrame:
+    interval_columns = ["beta_interval_90k",
+                        "beta_interval_70k",
+                        "beta_interval_50k",
+                        "beta_interval_50m",
+                        "beta_interval_50b"]
+    question_subsets = {'all': interval_columns,
+                        '90_70_50': interval_columns[:3],
+                        'k_m_b': interval_columns[-3:]}
+    
     processed_df = (
         study_3c_df
         .query("valence == 'happy' & thinking == 'reflection'")
-        .assign(
-            beta_interval_t_90 = lambda x:
-                get_beta_interval_from_answer(x.t_90, 100_000, 90),
-            beta_interval_t_70 = lambda x:
-                get_beta_interval_from_answer(x.t_70, 100_000, 70),
-            beta_interval_t_50k = lambda x:
-                get_beta_interval_from_answer(x.t_50k, 100_000, 50),
-        )
+        .pipe(create_intervals)
+        .pipe(get_intersections_and_bounds_and_midpoints, question_subsets)
+        .drop(columns=interval_columns)
     )
-
-    processed_df['beta_interval_intersection'] = (
-        processed_df.apply(lambda row:
-                           row.beta_interval_t_90
-                           & row.beta_interval_t_70
-                           & row.beta_interval_t_50k,
-                           axis=1)
-    )
-
-    processed_df['intersection_is_empty'] = (
-        processed_df.apply(lambda row: row.beta_interval_intersection.empty,
-                           axis=1)
-    )
-
-    processed_df = processed_df.assign(
-            beta_midpoint = lambda x: get_midpoint(x.beta_interval_intersection)
-    )
-    
     return processed_df
 
 
@@ -103,28 +145,17 @@ study_3c_path = "osfstorage-archive/Study 3c/PopEthics Study 3c.csv"
 study_3c_df = pd.read_csv(study_3c_path)
 
 # %% Process
-processed_df = study_3c_df.pipe(infer_beta)
-
+processed_df = process(study_3c_df)
 
 # %% Histogram
-processed_df['beta_intersection_lower'] = (
-    processed_df['beta_interval_intersection']
-    .apply(lambda x: x.lower if not x.empty else np.nan)
-)
-
-processed_df['beta_intersection_upper'] = (
-    processed_df['beta_interval_intersection']
-    .apply(lambda x: x.upper if not x.empty else np.nan)
-)
-
 histogram_df = (
-    processed_df[['beta_midpoint', 'beta_intersection_upper', 'beta_intersection_lower']]
+    processed_df[['90_70_50_midpoint', '90_70_50_upper', '90_70_50_lower']]
     .value_counts()
     .reset_index(name="frequency")
-    .sort_values("beta_midpoint")
+    .sort_values("90_70_50_midpoint")
     .assign(
-        interval_length = lambda x: x.beta_intersection_upper
-                                    - x.beta_intersection_lower,
+        interval_length = lambda x: x['90_70_50_upper']
+                                    - x['90_70_50_lower'],
         frequency_combined = lambda x: np.where(
             x.interval_length > 0,
             x.frequency + x.frequency.shift(1).fillna(0),
@@ -143,8 +174,8 @@ histogram = (
     chart_base
     .mark_rect()
     .encode(
-        x='beta_intersection_lower',
-        x2='beta_intersection_upper',
+        x='90_70_50_lower',
+        x2='90_70_50_upper',
         y=alt.Y('density', axis=None)
     )
 )
@@ -155,9 +186,9 @@ labels = (
     .mark_text(dy=-8)
     .encode(
         x=alt.X(
-            'beta_midpoint',
+            '90_70_50_midpoint',
             axis=alt.Axis(title="Estimated 𝛽",
-                          values=histogram_df.beta_intersection_upper.values,
+                          values=histogram_df['90_70_50_upper'].values,
                           format=".2")
         ),
         y=alt.Y('density', axis=None),
