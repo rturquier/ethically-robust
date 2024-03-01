@@ -138,6 +138,65 @@ def process(study_3c_df: pd.DataFrame) -> pd.DataFrame:
     return processed_df
 
 
+def prepare_histogram_df(processed_df:pd.DataFrame, prefix:str):
+    useful_columns_suffixes = ["_midpoint", "_upper", "_lower"]
+    useful_columns = [prefix + suffix for suffix in useful_columns_suffixes]
+    
+    histogram_df = (
+        processed_df[useful_columns]
+        .value_counts()
+        .reset_index(name="frequency")
+        .sort_values(prefix + "_midpoint")
+        .assign(
+            interval_length = lambda x: x[prefix + '_upper']
+                                        - x[prefix + '_lower'],
+            frequency_combined = lambda x: np.where(
+                x.interval_length > 0,
+                x.frequency + x.frequency.shift(1).fillna(0),
+                np.nan
+            ),
+            density = lambda x: x.frequency_combined / x.interval_length
+        )
+    )
+    return histogram_df    
+    
+
+def make_beta_histogram(processed_df:pd.DataFrame, prefix:str) -> alt.Chart:
+    histogram_df = prepare_histogram_df(processed_df, prefix)
+    
+    chart_base = (
+        alt.Chart(histogram_df)
+        .properties(width=550, height=300)
+    )
+
+    histogram = (
+        chart_base
+        .mark_rect()
+        .encode(
+            x=prefix + '_lower',
+            x2=prefix + '_upper',
+            y=alt.Y('density', axis=None)
+        )
+    )
+
+    labels = (
+        chart_base
+        .transform_filter("datum.interval_length > 0")
+        .mark_text(dy=-8)
+        .encode(
+            x=alt.X(
+                prefix + '_midpoint',
+                axis=alt.Axis(title="Estimated 𝛽",
+                            values=histogram_df[prefix + '_upper'].values,
+                            format=".2")
+            ),
+            y=alt.Y('density', axis=None),
+            text='frequency_combined'
+        )
+    )
+    
+    return (histogram + labels).configure_view(stroke=None)
+
 
 # ======= Main code ========
 # %% Read data
@@ -147,54 +206,7 @@ study_3c_df = pd.read_csv(study_3c_path)
 # %% Process
 processed_df = process(study_3c_df)
 
-# %% Histogram
-histogram_df = (
-    processed_df[['90_70_50_midpoint', '90_70_50_upper', '90_70_50_lower']]
-    .value_counts()
-    .reset_index(name="frequency")
-    .sort_values("90_70_50_midpoint")
-    .assign(
-        interval_length = lambda x: x['90_70_50_upper']
-                                    - x['90_70_50_lower'],
-        frequency_combined = lambda x: np.where(
-            x.interval_length > 0,
-            x.frequency + x.frequency.shift(1).fillna(0),
-            np.nan
-        ),
-        density = lambda x: x.frequency_combined / x.interval_length
-    )
-)
-
-chart_base = (
-    alt.Chart(histogram_df)
-    .properties(width=550, height=300)
-)
-
-histogram = (
-    chart_base
-    .mark_rect()
-    .encode(
-        x='90_70_50_lower',
-        x2='90_70_50_upper',
-        y=alt.Y('density', axis=None)
-    )
-)
-
-labels = (
-    chart_base
-    .transform_filter("datum.interval_length > 0")
-    .mark_text(dy=-8)
-    .encode(
-        x=alt.X(
-            '90_70_50_midpoint',
-            axis=alt.Axis(title="Estimated 𝛽",
-                          values=histogram_df['90_70_50_upper'].values,
-                          format=".2")
-        ),
-        y=alt.Y('density', axis=None),
-        text='frequency_combined'
-    )
-)
-(histogram + labels).configure_view(stroke=None)
-# (histogram + labels).configure_view(stroke=None).save("charts/caviola_3c_beta_histogram.svg")
-# %%
+# %% Histograms
+make_beta_histogram(processed_df, "all")
+make_beta_histogram(processed_df, "90_70_50")
+make_beta_histogram(processed_df, "k_m_b")
