@@ -179,16 +179,18 @@ def make_beta_histogram(processed_df:pd.DataFrame, prefix:str) -> alt.Chart:
         )
     )
 
+    label_values_except_zero = histogram_df[prefix + '_upper'].values
+    label_values = np.insert(label_values_except_zero, 0, 0)
     labels = (
         chart_base
-        .transform_filter("datum.interval_length > 0")
         .mark_text(dy=-8)
         .encode(
             x=alt.X(
                 prefix + '_midpoint',
                 axis=alt.Axis(title="Estimated 𝛽",
-                            values=histogram_df[prefix + '_upper'].values,
-                            format=".2")
+                              values=label_values,
+                              labelOverlap="greedy",
+                              format=".2")
             ),
             y=alt.Y('density', axis=None),
             text='frequency_combined'
