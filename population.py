@@ -138,6 +138,18 @@ def process(study_3c_df: pd.DataFrame) -> pd.DataFrame:
     return processed_df
 
 
+def carry_single_point_values_to_next_bin(df) -> pd.Series: 
+    current_line_is_single_point = (df.interval_length == 0)
+    previous_line = df.shift(1, fill_value=0)
+    previous_line_is_single_point = (previous_line.interval_length == 0)
+    
+    frequency_combined = np.select(
+        [current_line_is_single_point, previous_line_is_single_point, True],
+        [np.nan, df.frequency + previous_line.frequency, df.frequency]
+    )
+    return frequency_combined
+
+
 def prepare_histogram_df(processed_df:pd.DataFrame, prefix:str):
     useful_columns_suffixes = ["_midpoint", "_upper", "_lower"]
     useful_columns = [prefix + suffix for suffix in useful_columns_suffixes]
@@ -150,15 +162,7 @@ def prepare_histogram_df(processed_df:pd.DataFrame, prefix:str):
         .assign(
             interval_length = lambda x: x[prefix + '_upper']
                                         - x[prefix + '_lower'],
-            frequency_combined = lambda x: np.select(
-                # Carry single point value to the next bin
-                [x.interval_length == 0,
-                 x.interval_length.shift(1, fill_value=0) == 0,
-                 True],
-                [np.nan,
-                 x.frequency + x.frequency.shift(1, fill_value=0),
-                 x.frequency]
-            ),
+            frequency_combined = carry_single_point_values_to_next_bin,
             density = lambda x: x.frequency_combined / x.interval_length
         )
     )
