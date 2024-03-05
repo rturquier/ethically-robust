@@ -150,10 +150,14 @@ def prepare_histogram_df(processed_df:pd.DataFrame, prefix:str):
         .assign(
             interval_length = lambda x: x[prefix + '_upper']
                                         - x[prefix + '_lower'],
-            frequency_combined = lambda x: np.where(
-                x.interval_length > 0,
-                x.frequency + x.frequency.shift(1).fillna(0),
-                np.nan
+            frequency_combined = lambda x: np.select(
+                # Carry single point value to the next bin
+                [x.interval_length == 0,
+                 x.interval_length.shift(1, fill_value=0) == 0,
+                 True],
+                [np.nan,
+                 x.frequency + x.frequency.shift(1, fill_value=0),
+                 x.frequency]
             ),
             density = lambda x: x.frequency_combined / x.interval_length
         )
