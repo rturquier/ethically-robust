@@ -19,7 +19,7 @@ import numpy as np
 import portion as intervals
 from numbers import Number
 import altair as alt
-
+import scipy.stats as stats
 
 # %% ======= Functions =======
 def get_beta_from_indifference(population, utility):
@@ -220,3 +220,28 @@ processed_df = process(study_3c_df)
 make_beta_histogram(processed_df, "all")
 make_beta_histogram(processed_df, "90_70_50")
 make_beta_histogram(processed_df, "k_m_b")
+
+
+# %% Calibrate
+class kumaraswamy_gen(stats.rv_continuous):
+    "Kumaraswamy distribution"
+    def _pdf(self, x, a, b):
+        return a * b * x**(a - 1) * (1 - x**a)**(b-1)
+
+import matplotlib.pyplot as plt
+kumaraswamy_frozen = kumaraswamy_gen(a=0.5, b=1)
+a = 0.5
+b = 1
+fig, ax = plt.subplots(1, 1)
+x = np.linspace(0, 1, 100)
+ax.plot(x, kumaraswamy_frozen.pdf(x, a, b),
+       'r-', lw=5, alpha=0.6, label='Kumaraswamy pdf')
+fig
+
+
+kumaraswamy_gen().fit(processed_df.loc[:, "all_midpoint"].dropna())
+
+
+
+
+stats.beta.fit(processed_df.loc[:, "all_midpoint"].dropna())
