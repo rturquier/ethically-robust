@@ -208,6 +208,19 @@ def make_beta_histogram(processed_df:pd.DataFrame, prefix:str) -> alt.Chart:
     return (histogram + labels).configure_view(stroke=None)
 
 
+def calibrate_beta_MM(observations):
+    """Calibrate the parameters of the beta distribution on observations
+    
+    Source: https://statproofbook.github.io/P/beta-mome
+    """
+    sample_mean = np.mean(observations)
+    sample_variance = np.var(observations, ddof=1) # unbiased sample variance
+    
+    a = sample_mean * (sample_mean * (1 - sample_mean) / sample_variance  - 1)
+    b = a * (1 / sample_mean - 1)
+    return a, b
+
+
 # ======= Main code ========
 # %% Read data
 study_3c_path = "osfstorage-archive/Study 3c/PopEthics Study 3c.csv"
@@ -220,3 +233,11 @@ processed_df = process(study_3c_df)
 make_beta_histogram(processed_df, "all")
 make_beta_histogram(processed_df, "90_70_50")
 make_beta_histogram(processed_df, "k_m_b")
+
+
+# %% Calibrate
+upper_bounds = processed_df.loc[:, 'all_upper'].dropna()
+lower_bounds = processed_df.loc[:, 'all_lower'].dropna()
+
+a_lower, b_lower = calibrate_beta_MM(lower_bounds)
+a_upper, b_upper = calibrate_beta_MM(upper_bounds)
