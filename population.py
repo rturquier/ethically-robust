@@ -17,9 +17,10 @@ Supplemental materials for "Population Ethical Intuitions", 19 January
 import pandas as pd
 import numpy as np
 import portion as intervals
-from numbers import Number
 import altair as alt
+from scipy import stats
 
+import functions as f
 
 # %% ======= Functions =======
 def get_beta_from_indifference(population, utility):
@@ -118,7 +119,7 @@ def get_intersections_and_bounds_and_midpoints(df, question_subsets:dict):
     return df
 
 
-def process(study_3c_df: pd.DataFrame) -> pd.DataFrame:
+def infer_beta_from_answers(study_3c_df: pd.DataFrame) -> pd.DataFrame:
     interval_columns = ["beta_interval_90k",
                         "beta_interval_70k",
                         "beta_interval_50k",
@@ -163,7 +164,9 @@ def prepare_histogram_df(processed_df:pd.DataFrame, prefix:str):
             interval_length = lambda x: x[prefix + '_upper']
                                         - x[prefix + '_lower'],
             frequency_combined = carry_single_point_values_to_next_bin,
-            density = lambda x: x.frequency_combined / x.interval_length
+            proportion = lambda x: x.frequency_combined
+                                   / x.frequency_combined.sum(),
+            density = lambda x: x.proportion / x.interval_length
         )
     )
     return histogram_df    
@@ -205,7 +208,7 @@ def make_beta_histogram(processed_df:pd.DataFrame, prefix:str) -> alt.Chart:
         )
     )
     
-    return (histogram + labels).configure_view(stroke=None)
+    return (histogram + labels)
 
 
 def calibrate_beta_MM(observations):
@@ -227,12 +230,12 @@ study_3c_path = "osfstorage-archive/Study 3c/PopEthics Study 3c.csv"
 study_3c_df = pd.read_csv(study_3c_path)
 
 # %% Process
-processed_df = process(study_3c_df)
+processed_df = infer_beta_from_answers(study_3c_df)
 
 # %% Histograms
-make_beta_histogram(processed_df, "all")
-make_beta_histogram(processed_df, "90_70_50")
-make_beta_histogram(processed_df, "k_m_b")
+beta_histogram_all = make_beta_histogram(processed_df, "all")
+beta_histogram_90_70_50 = make_beta_histogram(processed_df, "90_70_50")
+beta_histogram_k_m_b = make_beta_histogram(processed_df, "k_m_b")
 
 
 # %% Calibrate
@@ -241,3 +244,37 @@ lower_bounds = processed_df.loc[:, 'all_lower'].dropna()
 
 a_lower, b_lower = calibrate_beta_MM(lower_bounds)
 a_upper, b_upper = calibrate_beta_MM(upper_bounds)
+
+# %% Plot calibrated densities on histogram
+beta_density_df = (
+    pd.DataFrame({'x': np.linspace(0, 1, 500)})
+    .assign(
+        beta_upper = lambda r: stats.beta.pdf(r.x, a=a_upper, b=b_upper),
+        beta_lower = lambda r: stats.beta.pdf(r.x, a=a_lower, b=b_lower)
+    )
+)
+
+beta_density_lower_line = f.line_chart(
+    beta_density_df,
+    x='x',
+    y='beta_lower',
+    color="#88CC66AA",
+    x_title=""
+)
+
+beta_density_upper_line = f.line_chart(
+    beta_density_df,
+    x='x',
+    y='beta_upper',
+    color="#FA3",
+    strokeDash=[5,2],
+    x_title=""
+)
+
+beta_calibration_plot = alt.layer(
+    beta_histogram_all,
+    beta_density_lower_line,
+    beta_density_upper_line
+)
+
+beta_calibration_plot
