@@ -147,7 +147,10 @@ def density_chart(df, x, freq, pdf, bin_step=1, x_format="~f"):
     bar_scale = 'datum.' + freq + ' / ' + str(bin_step)
     bar_y     = alt.Y('sum(freq_scaled):Q', axis=alt.Axis(title=""))
 
-    line_x = alt.X(x,   axis=alt.Axis(title="value", format=x_format))
+    line_x = alt.X(
+        x,
+        axis=alt.Axis(title="value", format=x_format, labelFlush=False)
+    )
     line_y = alt.Y(pdf, axis=alt.Axis(title="density"), type="quantitative")
 
 
@@ -163,8 +166,16 @@ def density_chart(df, x, freq, pdf, bin_step=1, x_format="~f"):
         base.mark_line()
         .encode(x=line_x, y=line_y, color=line_color)
     )
+    
+    complete_chart = (
+        (bar + line)
+        .properties(
+            width=220,
+            height=150
+        )
+    )
 
-    return bar + line
+    return complete_chart
 
 
 def dict_to_labelExpr(legend_dict):
@@ -193,13 +204,23 @@ def line_chart(df, x, y, x_title=False, y_title=False, x_format="~f",
     if y_title == False:
         y_title = y
 
+    line_chart_x_axis = alt.Axis(
+        title=x_title,
+        format=x_format,
+        titlePadding=5
+    )
+    line_chart_y_axis = alt.Axis(
+        title=y_title,
+        format=y_format,
+        titlePadding=10
+    )
+
     chart = (
         alt.Chart(df)
         .mark_line()
         .encode(
-            x=alt.X(x, axis=alt.Axis(title=x_title, format=x_format)),
-            y=alt.Y(y, axis=alt.Axis(title=y_title, format=y_format),
-                    scale=y_scale)
+            x=alt.X(x, axis=line_chart_x_axis),
+            y=alt.Y(y, axis=line_chart_y_axis, scale=y_scale)
         )
         .properties(title={"text": title, "subtitle": subtitle})
     )

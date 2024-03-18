@@ -102,40 +102,40 @@ df_eta = df_eta.assign(
 # %% Density charts - delta
 (
     f.density_chart(df_delta, x="x_delta", freq="freq_delta",
-                  pdf="pdf_delta_MLE", bin_step=0.004, x_format="%"
+                  pdf="pdf_delta_MLE", bin_step=0.005, x_format="~%"
                  )
-    .properties(title={"text": "Distribution of beliefs over \u03b4",
-                       "subtitle": "Fit with maximum likelihood estimation"})
-    .save("charts/delta_MLE.html")
+    # .properties(title={"text": "Distribution of beliefs over \u03b4",
+    #                    "subtitle": "Fit with maximum likelihood estimation"})
+    .save("charts/delta_MLE.svg")
 )
 
 
 (
     f.density_chart(df_delta, x="x_delta", freq="freq_delta",
-                  pdf="pdf_delta_MM", bin_step=0.004, x_format="%"
+                  pdf="pdf_delta_MM", bin_step=0.005, x_format="~%"
                  )
-    .properties(title={"text": "Distribution of beliefs over \u03b4",
-                       "subtitle": "Fit with method of moments"})
-    .save("charts/delta_MM.html")
+    # .properties(title={"text": "Distribution of beliefs over \u03b4",
+    #                    "subtitle": "Fit with method of moments"})
+    .save("charts/delta_MM.svg")
 )
 
 
 # %% Density charts - eta
 (
     f.density_chart(df_eta, x="x_eta", freq="freq_eta", pdf="pdf_eta_MLE",
-                  bin_step=0.4)
+                  bin_step=0.5)
     .properties(title={"text": "Distribution of beliefs over \u03b7",
                        "subtitle": "Fit with maximum likelihood estimation"})
-    .save("charts/eta_MLE.html")
+    .save("charts/eta_MLE.svg")
 )
 
 
 (
     f.density_chart(df_eta, x="x_eta", freq="freq_eta", pdf="pdf_eta_MM",
-                  bin_step=0.4)
+                  bin_step=0.5)
     .properties(title={"text": "Distribution of beliefs over \u03b7",
                        "subtitle": "Fit with method of moments"})
-    .save("charts/eta_MM.html")
+    .save("charts/eta_MM.svg")
 )
 
 
@@ -179,7 +179,7 @@ df_sdr = (
           x_title="Year",
           y_title="Relative approximation error", y_format="%")
     .properties(width=600, height=300)
-    .save("charts/relative_approximation_error.html")
+    .save("charts/relative_approximation_error.svg")
 )
 
 # %% Plot of social discount rate
@@ -214,7 +214,7 @@ legend_dict = {
         y_format="%"
     )
     .properties(width=600, height=300)
-    .save("charts/social_discount_rate.html")
+    .save("charts/social_discount_rate.svg")
 )
 
 # %% Plot social discount factor
@@ -245,7 +245,7 @@ legend_dict = {
         y_format="%"
     )
     .properties(width=600, height=300)
-    .save("charts/social_discount_factor.html")
+    .save("charts/social_discount_factor.svg")
 )
 
 # %% plot ratio of factors
@@ -259,5 +259,5 @@ legend_dict = {
         color="#b12447"
     )
     .properties(width=600, height=300)
-    .save("charts/discount_factor_ratio.html")
+    .save("charts/discount_factor_ratio.svg")
 )
