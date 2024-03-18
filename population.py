@@ -347,7 +347,7 @@ beta_calibration_plot = alt.layer(
 beta_calibration_plot
 
 
-# %% 
+# %%  Construct population discount rate dataframe
 population_sdr_df = (
     pd.DataFrame()
     .assign(
@@ -367,3 +367,26 @@ population_sdr_df = (
         )
     )
 )
+
+
+# %% Plot social discount rates with population growth
+legend_dict = {
+    "sdr_averagism": "Averagism",
+    "sdr_beta_lower": "Beta uncertainty (lower bounds)",
+    "sdr_uniform": "Uniform uncertainty",
+    "sdr_beta_upper": "Beta uncertainty (upper bounds)",
+    "sdr_totalism": "Totalism",
+}
+
+population_sdr_df.melt('year').pipe(
+    f.line_chart,
+    x='year', y='value', multi=True, color='variable', strokeDash='variable',
+    legend=alt.Legend(
+            title=None,
+            labelExpr=f.dict_to_labelExpr(legend_dict),
+            orient="bottom"
+    ),
+     x_title="Year",
+    y_title="Social discount rate",
+    y_format="%"
+).properties(width=550, height=300)
