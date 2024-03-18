@@ -18,7 +18,7 @@ import pandas as pd
 import numpy as np
 import portion as intervals
 import altair as alt
-from scipy import stats
+import scipy as sp
 
 import functions as f
 
@@ -224,6 +224,73 @@ def calibrate_beta_MM(observations):
     return a, b
 
 
+def ramsey_population_certain(delta=0.01, eta=1, g_c=0.02, g_n=0.02, beta=1):
+    discount_rate = (1 + delta) * (1 + g_n)**(-beta) * (1 + g_c)**eta - 1    
+    return discount_rate
+
+
+def population_size(t, n_0, g_n):
+    return n_0 * (1 + g_n)**t
+
+
+def beta_expectation(func, a, b):
+    """    
+    Compute the expected value of a function using a beta distribution.
+
+    Return the expected value of `func(X)`, where random variable `X`
+    follows a beta distribution of parameters `(a, b)`. 
+
+    This is in theory equivalent to using scipy's `stats.beta.expect`
+    method. However, for some values of parameters `a` and `b`, the
+    integral cannot be computed using the `.expect` method.
+    
+    This function uses the `alg` weighting function available in the
+    `scipy.integrate.quad` function. See the documentation of this
+    function for more information. See also this StackOverflow question,
+    which recommands this solution when scipy fails to calculate an
+    integral: https://stackoverflow.com/q/44848189/12949296
+    """
+    beta_denominator = sp.special.beta(a, b)
+    integrand = lambda x: func(x) / beta_denominator
+    weight_parameters = (a - 1, b - 1)
+    integration_tuple = sp.integrate.quad(
+        integrand,
+        0,
+        1,
+        weight="alg",
+        wvar=weight_parameters
+    )
+    expectation = integration_tuple[0]
+    return expectation
+
+
+@np.vectorize
+def ramsey_population_uncertain(t, a, b, n_0=10, g_n=0.02, delta=0.01, 
+                                eta=1, g_c=0.02):
+    population_value_future = lambda beta: population_size(t, n_0, g_n)**beta
+    population_value_present = lambda beta: population_size(0, n_0, g_n)**beta
+    
+    population_expected_value_future = beta_expectation(
+        population_value_future,
+        a,
+        b
+    )
+    population_expected_value_present = beta_expectation(
+        population_value_present,
+        a, 
+        b
+    )
+    
+    population_expected_value_ratio = (population_expected_value_future
+                                       / population_expected_value_present)
+    
+    discount_rate = (
+        (1 + delta) * (1 + g_c)**eta * population_expected_value_ratio**(-1/t)
+        - 1
+    )
+    return discount_rate
+
+
 # ======= Main code ========
 # %% Read data
 study_3c_path = "osfstorage-archive/Study 3c/PopEthics Study 3c.csv"
@@ -249,8 +316,8 @@ a_upper, b_upper = calibrate_beta_MM(upper_bounds)
 beta_density_df = (
     pd.DataFrame({'x': np.linspace(0, 1, 1000)})
     .assign(
-        beta_upper = lambda r: stats.beta.pdf(r.x, a=a_upper, b=b_upper),
-        beta_lower = lambda r: stats.beta.pdf(r.x, a=a_lower, b=b_lower)
+        beta_upper = lambda r: sp.stats.beta.pdf(r.x, a=a_upper, b=b_upper),
+        beta_lower = lambda r: sp.stats.beta.pdf(r.x, a=a_lower, b=b_lower)
     )
 )
 
@@ -278,3 +345,25 @@ beta_calibration_plot = alt.layer(
 )
 
 beta_calibration_plot
+
+
+# %% 
+population_sdr_df = (
+    pd.DataFrame()
+    .assign(
+        year=np.linspace(1, 500, 300),
+        sdr_averagism=ramsey_population_certain(beta=0),
+        sdr_totalism=ramsey_population_certain(beta=1),
+        sdr_uniform=lambda x: ramsey_population_uncertain(t=x.year, a=1, b=1),
+        sdr_beta_lower=lambda x: ramsey_population_uncertain(
+            t=x.year,
+            a=a_lower,
+            b=b_lower
+        ),
+        sdr_beta_upper=lambda x: ramsey_population_uncertain(
+            t=x.year,
+            a=a_upper,
+            b=b_upper
+        )
+    )
+)
