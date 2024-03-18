@@ -182,7 +182,7 @@ def make_beta_histogram(processed_df:pd.DataFrame, prefix:str) -> alt.Chart:
 
     histogram = (
         chart_base
-        .mark_rect()
+        .mark_rect(fill="#8FBC8F")
         .encode(
             x=prefix + '_lower',
             x2=prefix + '_upper',
@@ -247,7 +247,7 @@ a_upper, b_upper = calibrate_beta_MM(upper_bounds)
 
 # %% Plot calibrated densities on histogram
 beta_density_df = (
-    pd.DataFrame({'x': np.linspace(0, 1, 500)})
+    pd.DataFrame({'x': np.linspace(0, 1, 1000)})
     .assign(
         beta_upper = lambda r: stats.beta.pdf(r.x, a=a_upper, b=b_upper),
         beta_lower = lambda r: stats.beta.pdf(r.x, a=a_lower, b=b_lower)
@@ -258,7 +258,7 @@ beta_density_lower_line = f.line_chart(
     beta_density_df,
     x='x',
     y='beta_lower',
-    color="#88CC66AA",
+    color="#008B8BAA",
     x_title=""
 )
 
@@ -266,7 +266,7 @@ beta_density_upper_line = f.line_chart(
     beta_density_df,
     x='x',
     y='beta_upper',
-    color="#FA3",
+    color="#8018BFAA",
     strokeDash=[5,2],
     x_title=""
 )
