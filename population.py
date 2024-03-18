@@ -378,15 +378,24 @@ legend_dict = {
     "sdr_totalism": "Totalism",
 }
 
-population_sdr_df.melt('year').pipe(
-    f.line_chart,
-    x='year', y='value', multi=True, color='variable', strokeDash='variable',
-    legend=alt.Legend(
+population_sdr_plot = (
+    population_sdr_df
+    .melt('year')
+    .pipe(
+        f.line_chart,
+        x='year',
+        y='value',
+        multi=True,
+        color='variable',
+        strokeDash='variable',
+        legend=alt.Legend(
             title=None,
             labelExpr=f.dict_to_labelExpr(legend_dict),
             orient="bottom"
-    ),
-     x_title="Year",
-    y_title="Social discount rate",
-    y_format="%"
-).properties(width=550, height=300)
+        ),
+        x_title="Year",
+        y_title="Social discount rate",
+        y_format="%"
+    )
+    .properties(width=550, height=300)
+)
