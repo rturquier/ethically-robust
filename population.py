@@ -325,7 +325,7 @@ beta_density_lower_line = f.line_chart(
     beta_density_df,
     x='x',
     y='beta_lower',
-    color="#008B8BAA",
+    color="#008B8B",
     x_title=""
 )
 
@@ -333,7 +333,7 @@ beta_density_upper_line = f.line_chart(
     beta_density_df,
     x='x',
     y='beta_upper',
-    color="#8018BFAA",
+    color="#8018BF",
     strokeDash=[5,2],
     x_title=""
 )
