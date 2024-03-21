@@ -372,9 +372,9 @@ population_sdr_df = (
 # %% Plot social discount rates with population growth
 legend_dict = {
     "sdr_averagism": "Averagism",
-    "sdr_beta_lower": "Beta uncertainty (lower bounds)",
+    "sdr_beta_lower": "Beta uncertainty (most averagist)",
     "sdr_uniform": "Uniform uncertainty",
-    "sdr_beta_upper": "Beta uncertainty (upper bounds)",
+    "sdr_beta_upper": "Beta uncertainty (most totalist)",
     "sdr_totalism": "Totalism",
 }
 
