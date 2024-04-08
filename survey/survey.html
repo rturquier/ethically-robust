@@ -8,7 +8,7 @@
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
-    <script type="module" src="survey.js"></script>
+    <script type="module" src="survey.js" differ></script>
 
 </head>
 <body>
@@ -34,8 +34,9 @@
             <h3 class="text-xl mt-4 mb-1.5">Question 1</h3>
             Which distribution most accurately represents your beliefs on the most appropriate value for \(\beta\)&nbsp;?
             <br>
-            <div class="interactive-distribution"></div>
-            <input class="rounded border-gray-900 border mt-4 p-1 focus:outline-none w-auto" type="text"/>
+            <div class="d3-viz" id="viz-beliefs"></div>
+            <input type="range" class="alpha" min="0" max="10" value="1">
+            <input type="range" class="beta" min="0" max="10" value="1">
             <br>
         </div>
     </section>
