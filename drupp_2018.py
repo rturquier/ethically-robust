@@ -92,6 +92,10 @@ df_delta = df_delta.assign(
     pdf_delta_MM =lambda r: stats.betaprime(1, beta_prime_MM ).pdf(r.x_delta)
 )
 
+# Only plot density on the support
+df_delta = df_delta.replace(to_replace={'pdf_delta_MLE':{0: np.nan},
+                                        'pdf_delta_MM':{0: np.nan}})
+
 df_eta = df_eta.assign(
     pdf_eta_MLE=lambda r:
         stats.gamma(a=gamma_MLE_shape, scale=gamma_MLE_scale).pdf(r.x_eta),
@@ -100,43 +104,46 @@ df_eta = df_eta.assign(
 )
 
 # %% Density charts - delta
-(
+density_chart_delta_MLE = (
     f.density_chart(df_delta, x="x_delta", freq="freq_delta",
                   pdf="pdf_delta_MLE", bin_step=0.005, x_format="~%"
                  )
     # .properties(title={"text": "Distribution of beliefs over \u03b4",
     #                    "subtitle": "Fit with maximum likelihood estimation"})
-    .save("charts/delta_MLE.svg")
 )
+# density_chart_delta_MLE.save("charts/delta_MLE.svg")
 
 
-(
+density_chart_delta_MM = (
     f.density_chart(df_delta, x="x_delta", freq="freq_delta",
                   pdf="pdf_delta_MM", bin_step=0.005, x_format="~%"
                  )
     # .properties(title={"text": "Distribution of beliefs over \u03b4",
     #                    "subtitle": "Fit with method of moments"})
-    .save("charts/delta_MM.svg")
 )
+
+# density_chart_delta_MM.save("charts/delta_MM.svg")
 
 
 # %% Density charts - eta
-(
+density_chart_eta_MLE = (
     f.density_chart(df_eta, x="x_eta", freq="freq_eta", pdf="pdf_eta_MLE",
                   bin_step=0.5)
     .properties(title={"text": "Distribution of beliefs over \u03b7",
                        "subtitle": "Fit with maximum likelihood estimation"})
-    .save("charts/eta_MLE.svg")
 )
 
+# density_chart_eta_MLE.save("charts/eta_MLE.svg")
 
-(
+
+density_chart_eta_MM = (
     f.density_chart(df_eta, x="x_eta", freq="freq_eta", pdf="pdf_eta_MM",
                   bin_step=0.5)
     .properties(title={"text": "Distribution of beliefs over \u03b7",
                        "subtitle": "Fit with method of moments"})
-    .save("charts/eta_MM.svg")
 )
+
+# density_chart_eta_MLE.save("charts/eta_MM.svg")
 
 
 # %% Prepare the dataframe with the social discount rate (SDR)
