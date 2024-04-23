@@ -116,10 +116,15 @@ density_chart_delta_MLE = (
 
 density_chart_delta_MM = (
     f.density_chart(df_delta, x="x_delta", freq="freq_delta",
-                  pdf="pdf_delta_MM", bin_step=0.005, x_format="~%"
+                  pdf="pdf_delta_MM", bin_step=0.005, x_format="~%",
+                  bar_color="#FFE59C", line_color="#FFBB00",
+                  x_title="", y_title="density"
                  )
     # .properties(title={"text": "Distribution of beliefs over \u03b4",
     #                    "subtitle": "Fit with method of moments"})
+    .configure_axisY(labels=False, ticks=False, grid=False)
+    .configure_axisX(labelOffset=5)
+    .configure_view(strokeWidth=0)
 )
 
 # density_chart_delta_MM.save("charts/delta_MM.svg")
@@ -128,9 +133,9 @@ density_chart_delta_MM = (
 # %% Density charts - eta
 density_chart_eta_MLE = (
     f.density_chart(df_eta, x="x_eta", freq="freq_eta", pdf="pdf_eta_MLE",
-                  bin_step=0.5)
-    .properties(title={"text": "Distribution of beliefs over \u03b7",
-                       "subtitle": "Fit with maximum likelihood estimation"})
+                    bin_step=0.5)
+    # .properties(title={"text": "Distribution of beliefs over \u03b7",
+    #                    "subtitle": "Fit with maximum likelihood estimation"})
 )
 
 # density_chart_eta_MLE.save("charts/eta_MLE.svg")
@@ -138,9 +143,12 @@ density_chart_eta_MLE = (
 
 density_chart_eta_MM = (
     f.density_chart(df_eta, x="x_eta", freq="freq_eta", pdf="pdf_eta_MM",
-                  bin_step=0.5)
-    .properties(title={"text": "Distribution of beliefs over \u03b7",
-                       "subtitle": "Fit with method of moments"})
+                  bin_step=0.5, bar_color="#FFD49B", line_color="#F90",
+                  x_title="", y_title="")
+    # .properties(title={"text": "Distribution of beliefs over \u03b7",
+    #                    "subtitle": "Fit with method of moments"})
+    .configure_axisY(labels=False, ticks=False, grid=False, domain=False)
+    .configure_view(strokeWidth=0)
 )
 
 # density_chart_eta_MLE.save("charts/eta_MM.svg")
