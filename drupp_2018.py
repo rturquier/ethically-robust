@@ -204,7 +204,7 @@ legend_dict = {
     "sdr_uncertain_approx": "Expected choice-worthiness"
 }
 
-(
+sdr_chart = (
     df_sdr
     .loc[:, [
         "year",
@@ -218,18 +218,17 @@ legend_dict = {
         color="variable",
         strokeDash="variable",
         multi=True,
-        # title = "Long-run social discount rate",
-        legend=alt.Legend(
-            title=None,
-            labelExpr=f.dict_to_labelExpr(legend_dict),
-            orient="bottom"
-        ),
+        legend=None,
         x_title="Year",
         y_title="Social discount rate",
         y_format="%"
     )
-    .properties(width=600, height=300)
-    .save("charts/social_discount_rate.svg")
+    .properties(width=475, height=265)
+    .configure_range(category=["#1999DE", "#6BAFE0", "#6BAFE0"])
+    .configure_axisY(grid=False, tickCount=5)
+    .configure_axisX(grid=False, tickCount=6)
+    .configure_view(strokeWidth=0)
+    # .save("charts/social_discount_rate.svg")
 )
 
 # %% Plot social discount factor
