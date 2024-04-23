@@ -137,11 +137,10 @@ def merge_value_frequency(df_x, col_x, df_y, col_y):
     return df
 
 
-def density_chart(df, x, freq, pdf, bin_step=1, x_format="~f"):
+def density_chart(df, x, freq, pdf, bin_step=1, x_format="~f",
+                  bar_color="#8FBC8F", line_color="#008B8B", x_title="value",
+                  y_title="density"):
     """Plot a histogram with a fitted probability density function."""
-
-    bar_color  = alt.value("#8FBC8F")
-    line_color = alt.value("#008B8B")
 
     bar_x     = alt.X(x, bin=alt.Bin(step=bin_step), axis=alt.Axis(title=""))
     bar_scale = 'datum.' + freq + ' / ' + str(bin_step)
@@ -149,9 +148,14 @@ def density_chart(df, x, freq, pdf, bin_step=1, x_format="~f"):
 
     line_x = alt.X(
         x,
-        axis=alt.Axis(title="value", format=x_format, labelFlush=False)
+        axis=alt.Axis(title=x_title,
+                      format=x_format,
+                      labelFlush=False,
+                      zindex=1)
     )
-    line_y = alt.Y(pdf, axis=alt.Axis(title="density"), type="quantitative")
+    line_y = alt.Y(pdf,
+                   axis=alt.Axis(title=y_title, zindex=1),
+                   type="quantitative")
 
 
     base = alt.Chart(df)
@@ -159,12 +163,12 @@ def density_chart(df, x, freq, pdf, bin_step=1, x_format="~f"):
     bar = (
         base.mark_bar()
         .transform_calculate(freq_scaled=bar_scale)
-        .encode(x=bar_x, y=bar_y, color=bar_color)
+        .encode(x=bar_x, y=bar_y, color=alt.value(bar_color))
     )
 
     line = (
-        base.mark_line()
-        .encode(x=line_x, y=line_y, color=line_color)
+        base.mark_line(clip=True)
+        .encode(x=line_x, y=line_y, color=alt.value(line_color))
     )
     
     complete_chart = (

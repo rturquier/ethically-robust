@@ -92,6 +92,10 @@ df_delta = df_delta.assign(
     pdf_delta_MM =lambda r: stats.betaprime(1, beta_prime_MM ).pdf(r.x_delta)
 )
 
+# Only plot density on the support
+df_delta = df_delta.replace(to_replace={'pdf_delta_MLE':{0: np.nan},
+                                        'pdf_delta_MM':{0: np.nan}})
+
 df_eta = df_eta.assign(
     pdf_eta_MLE=lambda r:
         stats.gamma(a=gamma_MLE_shape, scale=gamma_MLE_scale).pdf(r.x_eta),
@@ -100,43 +104,54 @@ df_eta = df_eta.assign(
 )
 
 # %% Density charts - delta
-(
+density_chart_delta_MLE = (
     f.density_chart(df_delta, x="x_delta", freq="freq_delta",
                   pdf="pdf_delta_MLE", bin_step=0.005, x_format="~%"
                  )
     # .properties(title={"text": "Distribution of beliefs over \u03b4",
     #                    "subtitle": "Fit with maximum likelihood estimation"})
-    .save("charts/delta_MLE.svg")
 )
+# density_chart_delta_MLE.save("charts/delta_MLE.svg")
 
 
-(
+density_chart_delta_MM = (
     f.density_chart(df_delta, x="x_delta", freq="freq_delta",
-                  pdf="pdf_delta_MM", bin_step=0.005, x_format="~%"
+                  pdf="pdf_delta_MM", bin_step=0.005, x_format="~%",
+                  bar_color="#FFE59C", line_color="#FFBB00",
+                  x_title="", y_title="density"
                  )
     # .properties(title={"text": "Distribution of beliefs over \u03b4",
     #                    "subtitle": "Fit with method of moments"})
-    .save("charts/delta_MM.svg")
+    .configure_axisY(labels=False, ticks=False, grid=False)
+    .configure_axisX(labelOffset=5)
+    .configure_view(strokeWidth=0)
 )
+
+# density_chart_delta_MM.save("charts/delta_MM.svg")
 
 
 # %% Density charts - eta
-(
+density_chart_eta_MLE = (
     f.density_chart(df_eta, x="x_eta", freq="freq_eta", pdf="pdf_eta_MLE",
-                  bin_step=0.5)
-    .properties(title={"text": "Distribution of beliefs over \u03b7",
-                       "subtitle": "Fit with maximum likelihood estimation"})
-    .save("charts/eta_MLE.svg")
+                    bin_step=0.5)
+    # .properties(title={"text": "Distribution of beliefs over \u03b7",
+    #                    "subtitle": "Fit with maximum likelihood estimation"})
 )
 
+# density_chart_eta_MLE.save("charts/eta_MLE.svg")
 
-(
+
+density_chart_eta_MM = (
     f.density_chart(df_eta, x="x_eta", freq="freq_eta", pdf="pdf_eta_MM",
-                  bin_step=0.5)
-    .properties(title={"text": "Distribution of beliefs over \u03b7",
-                       "subtitle": "Fit with method of moments"})
-    .save("charts/eta_MM.svg")
+                  bin_step=0.5, bar_color="#FFD49B", line_color="#F90",
+                  x_title="", y_title="")
+    # .properties(title={"text": "Distribution of beliefs over \u03b7",
+    #                    "subtitle": "Fit with method of moments"})
+    .configure_axisY(labels=False, ticks=False, grid=False, domain=False)
+    .configure_view(strokeWidth=0)
 )
+
+# density_chart_eta_MLE.save("charts/eta_MM.svg")
 
 
 # %% Prepare the dataframe with the social discount rate (SDR)
@@ -189,7 +204,7 @@ legend_dict = {
     "sdr_uncertain_approx": "Expected choice-worthiness"
 }
 
-(
+sdr_chart = (
     df_sdr
     .loc[:, [
         "year",
@@ -203,18 +218,17 @@ legend_dict = {
         color="variable",
         strokeDash="variable",
         multi=True,
-        # title = "Long-run social discount rate",
-        legend=alt.Legend(
-            title=None,
-            labelExpr=f.dict_to_labelExpr(legend_dict),
-            orient="bottom"
-        ),
+        legend=None,
         x_title="Year",
         y_title="Social discount rate",
         y_format="%"
     )
-    .properties(width=600, height=300)
-    .save("charts/social_discount_rate.svg")
+    .properties(width=475, height=265)
+    .configure_range(category=["#1999DE", "#6BAFE0", "#6BAFE0"])
+    .configure_axisY(grid=False, tickCount=5)
+    .configure_axisX(grid=False, tickCount=6)
+    .configure_view(strokeWidth=0)
+    # .save("charts/social_discount_rate.svg")
 )
 
 # %% Plot social discount factor
