@@ -2,12 +2,23 @@ import { pdf as betaPdf } from 'https://cdn.jsdelivr.net/gh/stdlib-js/stats-base
 
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 
+/**
+ * Convert mean and variance of beta distribution to parameters of beta 
+ * distribution.
+ * See https://en.wikipedia.org/wiki/Beta_distribution.
+ */
+function momentsToParameters(mean, variance){
+    const commonFactor = (mean * (1 - mean)) / variance - 1;
+    const alpha = commonFactor * mean;
+    const beta = commonFactor * (1 - mean);
+    return [alpha, beta];
+}
 
 
 function plotBetaPdf(plotSelector){
     const viz = document.querySelector(plotSelector);
-    const sliderAlpha = document.querySelector(plotSelector + "~ input.alpha");
-    const sliderBeta = document.querySelector(plotSelector + "~ input.beta");
+    const sliderMean = document.querySelector(plotSelector + "~ input.mean");
+    const sliderSigma = document.querySelector(plotSelector + "~ input.sigma");
 
     const width = viz.offsetWidth;
     const height = width / 1.8;
@@ -42,15 +53,16 @@ function plotBetaPdf(plotSelector){
         .attr("transform", `translate(${marginLeft},0)`)
         .call(d3.axisLeft(yScale).tickFormat(""));
 
-    let alpha = sliderAlpha.valueAsNumber;
-    let beta = sliderBeta.valueAsNumber;
+    const mean = sliderMean.valueAsNumber;
+    const sigma = sliderSigma.valueAsNumber;
+    const variance = sigma**2;
+    const [alpha, beta] = momentsToParameters(mean, variance);
+
     const points = [];
     for (let x = 0; x <= 1; x += xPrecision){
         let y = betaPdf(x, alpha, beta);
         points.push([x, y]);
     }
-    
-    console.log(points);
 
     let line = d3.line()
                 .x(d => xScale(d[0]))
