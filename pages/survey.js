@@ -100,12 +100,24 @@ function plotBetaPdf(plotSelector){
     let line = d3.line()
                 .x(d => xScale(d[0]))
                 .y(d => yScale(d[1]));
+    let area = d3.area()
+                .x(d => xScale(d[0]))
+                .y0(height - marginBottom)
+                .y1(d => yScale(d[1]));
+    
+    svg.append("path")
+        .datum(points)
+        .attr("clip-path", "url(" + plotSelector + ")")
+        .attr("fill", "#FF5500")
+        .attr("stroke", "none")
+        .attr("opacity", "0.2")
+        .attr("d", area);
     
     svg.append("path")
         .datum(points)
         .attr("clip-path", "url(" + plotSelector + ")")
         .attr("fill", "none")
-        .attr("stroke", "teal")
+        .attr("stroke", "#FF5500")
         .attr("stroke-width", 2)
         .attr("d", line);
                             
