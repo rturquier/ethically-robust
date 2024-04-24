@@ -1,5 +1,3 @@
-import { pdf as betaPdf } from 'https://cdn.jsdelivr.net/gh/stdlib-js/stats-base-dists-beta@esm/index.mjs';
-
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 
 /**
@@ -14,6 +12,39 @@ function momentsToParameters(mean, variance){
     return [alpha, beta];
 }
 
+/**
+ * Beta probability density function impementation
+ * using logarithms, no factorials involved.
+ * Overcomes the problem with large integers.
+ * Code taken from https://github.com/royhzq/betajs.
+ */
+function betaPdf(x, a, b) {
+    // Beta probability density function impementation
+    // using logarithms, no factorials involved.
+    // Overcomes the problem with large integers
+    return Math.exp(lnBetaPDF(x, a, b))
+}
+function lnBetaPDF(x, a, b) {
+        // Log of the Beta Probability Density Function
+    return ((a-1)*Math.log(x) + (b-1)*Math.log(1-x)) - lnBetaFunc(a,b)
+}
+function lnBetaFunc(a, b) {
+		// Log Beta Function
+	  // ln(Beta(x,y))
+    let foo = 0.0;
+
+    for (let i=0; i<a-2; i++) {
+        foo += Math.log(a-1-i);
+    }
+    for (let i=0; i<b-2; i++) {
+        foo += Math.log(b-1-i);
+    }
+    for (let i=0; i<a+b-2; i++) {
+        foo -= Math.log(a+b-1-i);
+    }
+    return foo
+}
+
 
 function plotBetaPdf(plotSelector){
     const viz = document.querySelector(plotSelector);
@@ -26,7 +57,7 @@ function plotBetaPdf(plotSelector){
     const marginRight = 20;
     const marginBottom = 30;
     const marginLeft = 40;
-    const xPrecision = 0.01;
+    const xPrecision = 0.001;
 
 
     if (d3.select("svg") != false){
@@ -42,7 +73,7 @@ function plotBetaPdf(plotSelector){
                     .range([marginLeft, width - marginRight]);
     
     let yScale = d3.scaleLinear()
-                    .domain([0, 20])
+                    .domain([0, 10])
                     .range([height - marginBottom, marginTop]);
     
     svg.append("g")
@@ -59,10 +90,12 @@ function plotBetaPdf(plotSelector){
     const [alpha, beta] = momentsToParameters(mean, variance);
 
     const points = [];
-    for (let x = 0; x <= 1; x += xPrecision){
+    for (let x = 0 + xPrecision; x <= 1 - xPrecision; x += xPrecision){
         let y = betaPdf(x, alpha, beta);
         points.push([x, y]);
     }
+    
+    console.log(mean, variance, alpha, beta);
 
     let line = d3.line()
                 .x(d => xScale(d[0]))
