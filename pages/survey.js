@@ -17,6 +17,11 @@ function plotBetaPdf(plotSelector){
     const marginLeft = 40;
     const xPrecision = 0.01;
 
+
+    if (d3.select("svg") != false){
+        d3.select("svg").remove();
+    }
+
     let svg = d3.create("svg")
                 .attr("width", width)
                 .attr("height", height);
@@ -63,3 +68,7 @@ function plotBetaPdf(plotSelector){
 }
 
 plotBetaPdf("#viz-beliefs");
+document.querySelectorAll("#viz-beliefs ~ input")
+        .forEach(_ => addEventListener(
+            "input", _ => plotBetaPdf("#viz-beliefs")
+        ))
