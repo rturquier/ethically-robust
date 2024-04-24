@@ -40,7 +40,7 @@ function plotBetaPdf(plotSelector){
         
     svg.append("g")
         .attr("transform", `translate(${marginLeft},0)`)
-        .call(d3.axisLeft(yScale));
+        .call(d3.axisLeft(yScale).tickFormat(""));
 
     let alpha = sliderAlpha.valueAsNumber;
     let beta = sliderBeta.valueAsNumber;
