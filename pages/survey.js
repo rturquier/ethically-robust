@@ -32,8 +32,9 @@ function plotBetaPdf(plotSelector){
     const variance = sigma**2;
     const [alpha, beta] = momentsToParameters(mean, variance);
 
-    if (d3.select("svg") != false){
-        d3.select("svg").remove();
+    const existingSvg = d3.select(plotSelector + " svg");
+    if (existingSvg){
+        existingSvg.remove();
     }
 
     let svg = d3.create("svg")
@@ -93,4 +94,10 @@ plotBetaPdf("#viz-beliefs");
 document.querySelectorAll("#viz-beliefs ~ input")
         .forEach(_ => addEventListener(
             "input", _ => plotBetaPdf("#viz-beliefs")
+        ))
+
+plotBetaPdf("#viz-others");
+document.querySelectorAll("#viz-others ~ input")
+        .forEach(_ => addEventListener(
+            "input", _ => plotBetaPdf("#viz-others")
         ))
