@@ -20,7 +20,7 @@ function plotBetaPdf(plotSelector){
     const sliderSigma = document.querySelector(plotSelector + "~ input.sigma");
 
     const width = viz.offsetWidth;
-    const height = width / 2.5;
+    const height = Math.max(width / 2.5, 200);
     const marginTop = 20;
     const marginRight = 20;
     const marginBottom = 30;
@@ -101,3 +101,6 @@ document.querySelectorAll("#viz-others ~ input")
         .forEach(_ => addEventListener(
             "input", _ => plotBetaPdf("#viz-others")
         ))
+
+window.addEventListener("resize", _ => plotBetaPdf("#viz-others"));
+window.addEventListener("resize", _ => plotBetaPdf("#viz-beliefs"));
