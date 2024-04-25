@@ -1,3 +1,4 @@
+import { pdf as betaPdf } from 'https://cdn.jsdelivr.net/gh/stdlib-js/stats-base-dists-beta@esm/index.mjs';
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 
 /**
@@ -12,39 +13,6 @@ function momentsToParameters(mean, variance){
     return [alpha, beta];
 }
 
-/**
- * Beta probability density function impementation
- * using logarithms, no factorials involved.
- * Overcomes the problem with large integers.
- * Code taken from https://github.com/royhzq/betajs.
- */
-function betaPdf(x, a, b) {
-    // Beta probability density function impementation
-    // using logarithms, no factorials involved.
-    // Overcomes the problem with large integers
-    return Math.exp(lnBetaPDF(x, a, b))
-}
-function lnBetaPDF(x, a, b) {
-        // Log of the Beta Probability Density Function
-    return ((a-1)*Math.log(x) + (b-1)*Math.log(1-x)) - lnBetaFunc(a,b)
-}
-function lnBetaFunc(a, b) {
-		// Log Beta Function
-	  // ln(Beta(x,y))
-    let foo = 0.0;
-
-    for (let i=0; i<a-2; i++) {
-        foo += Math.log(a-1-i);
-    }
-    for (let i=0; i<b-2; i++) {
-        foo += Math.log(b-1-i);
-    }
-    for (let i=0; i<a+b-2; i++) {
-        foo -= Math.log(a+b-1-i);
-    }
-    return foo
-}
-
 
 function plotBetaPdf(plotSelector){
     const viz = document.querySelector(plotSelector);
@@ -52,13 +20,17 @@ function plotBetaPdf(plotSelector){
     const sliderSigma = document.querySelector(plotSelector + "~ input.sigma");
 
     const width = viz.offsetWidth;
-    const height = width / 1.8;
+    const height = width / 2.5;
     const marginTop = 20;
     const marginRight = 20;
     const marginBottom = 30;
     const marginLeft = 40;
     const xPrecision = 0.001;
 
+    const mean = sliderMean.valueAsNumber;
+    const sigma = sliderSigma.valueAsNumber;
+    const variance = sigma**2;
+    const [alpha, beta] = momentsToParameters(mean, variance);
 
     if (d3.select("svg") != false){
         d3.select("svg").remove();
@@ -73,7 +45,7 @@ function plotBetaPdf(plotSelector){
                     .range([marginLeft, width - marginRight]);
     
     let yScale = d3.scaleLinear()
-                    .domain([0, 10])
+                    .domain([0, 5])
                     .range([height - marginBottom, marginTop]);
     
     svg.append("g")
@@ -82,20 +54,13 @@ function plotBetaPdf(plotSelector){
         
     svg.append("g")
         .attr("transform", `translate(${marginLeft},0)`)
-        .call(d3.axisLeft(yScale).tickFormat(""));
-
-    const mean = sliderMean.valueAsNumber;
-    const sigma = sliderSigma.valueAsNumber;
-    const variance = sigma**2;
-    const [alpha, beta] = momentsToParameters(mean, variance);
+        .call(d3.axisLeft(yScale).tickFormat("").tickValues([1]).tickSizeOuter(0));
 
     const points = [];
     for (let x = 0 + xPrecision; x <= 1 - xPrecision; x += xPrecision){
         let y = betaPdf(x, alpha, beta);
         points.push([x, y]);
     }
-    
-    console.log(mean, variance, alpha, beta);
 
     let line = d3.line()
                 .x(d => xScale(d[0]))
