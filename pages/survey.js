@@ -90,13 +90,16 @@ function plotBetaPdf(plotSelector){
     viz.append(svg.node());
 }
 
+// Plot intial distributions
 plotBetaPdf("#viz-beliefs");
+plotBetaPdf("#viz-others");
+
+// Event listeners
 document.querySelectorAll("#viz-beliefs ~ input")
         .forEach(_ => addEventListener(
             "input", _ => plotBetaPdf("#viz-beliefs")
         ))
 
-plotBetaPdf("#viz-others");
 document.querySelectorAll("#viz-others ~ input")
         .forEach(_ => addEventListener(
             "input", _ => plotBetaPdf("#viz-others")
@@ -104,3 +107,13 @@ document.querySelectorAll("#viz-others ~ input")
 
 window.addEventListener("resize", _ => plotBetaPdf("#viz-others"));
 window.addEventListener("resize", _ => plotBetaPdf("#viz-beliefs"));
+
+document.querySelector("input[type='checkbox']#others-no-answer")
+        .addEventListener("input", _ => disableSliders("others")); 
+document.querySelector("input[type='checkbox']#beliefs-no-answer")
+        .addEventListener("input", _ => disableSliders("beliefs")); 
+
+function disableSliders(question){
+    document.querySelectorAll(`input[type="range"][name^="${question}"]`)
+    .forEach(slider => slider.toggleAttribute("disabled"));
+}
