@@ -183,7 +183,7 @@ def make_beta_histogram(processed_df:pd.DataFrame, prefix:str) -> alt.Chart:
 
     histogram = (
         chart_base
-        .mark_rect(fill="#8FBC8F")
+        .mark_rect(fill="#F1875E")
         .encode(
             x=prefix + '_lower',
             x2=prefix + '_upper',
@@ -199,7 +199,7 @@ def make_beta_histogram(processed_df:pd.DataFrame, prefix:str) -> alt.Chart:
         .encode(
             x=alt.X(
                 prefix + '_midpoint',
-                axis=alt.Axis(title="Estimated 𝛽",
+                axis=alt.Axis(title=None,
                               values=label_values,
                               labelOverlap="greedy",
                               format=".2")
