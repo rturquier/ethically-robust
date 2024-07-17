@@ -4,9 +4,6 @@
 """
 Get list of potential experts for population ethics survey
 
-Todo:
-- exclude "repugnant conclusions" (with an s), which are sometimes not
-  about population ethics
 """
 
 # %% Imports
@@ -51,8 +48,8 @@ authors_df = (
 # "...population. Ethics...".
 
 keyword_pattern = (
-    "(population ethics)|(average utilitarianism)|"
-    + "(total utilitarianism)|(repugnant conclusion)"
+    r"(population ethics)|(average utilitarianism)|"
+    + r"(total utilitarianism)|(repugnant conclusion\b)"
 )
 query_condition = (
     "title.str.contains(@keyword_pattern, case=False)"
@@ -102,6 +99,7 @@ all_abstracts_df = (
         how="left"
     )
     .assign(abstract = lambda df: df.abstract_y.combine_first(df.abstract_x))
+    .drop(['abstract_x', 'abstract_y'], axis="columns")
 )    
 
 selected_authors_df = all_abstracts_df.query(query_condition)
