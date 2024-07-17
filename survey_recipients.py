@@ -44,3 +44,28 @@ authors_df = (
   .drop_duplicates()
   .reset_index(drop=True)
 )
+
+# %%
+# Exclude papers that only match the query because of punctuation like
+# "...population. Ethics...".
+
+keyword_pattern = (
+    "(population ethics)|(average utilitarianism)|"
+    + "(total utilitarianism)|(repugnant conclusion)"
+)
+query_condition = (
+    "title.str.contains(@keyword_pattern, case=False)"
+    + "or abstract.str.contains(@keyword_pattern, case=False)"
+)
+
+selected_authors_df = authors_df.query(query_condition)
+
+all_authors = authors_df.name.drop_duplicates()
+selected_authors = selected_authors_df.name.drop_duplicates()
+excluded_authors = (
+  authors_df[~authors_df.name.isin(selected_authors)]
+  .name
+  .drop_duplicates()
+)
+
+assert len(all_authors) == len(selected_authors) + len(excluded_authors)
