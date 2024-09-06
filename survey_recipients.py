@@ -109,12 +109,9 @@ selected_authors_df = all_abstracts_df.query(query_condition)
 # %% Export list of unique names
 selected_names = (
     selected_authors_df
-    [['name']]
+    .name
     .dropna()
     .drop_duplicates()
-    .assign( # first_name = first word, last_name = last word
-        first_name = lambda df: df.name.str.extract(r"([\w\.\-]+)"),
-        last_name = lambda df: df.name.str.extract(r"([\w\-]+)(?!.*\w)"))
 )
 
 # selected_names.to_csv("data/list_of_unique_names.csv", index=False)
