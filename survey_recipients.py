@@ -80,10 +80,12 @@ empty_abstracts_df = (
     .drop_duplicates("paperId")
 )
 
-# Export table and manually copy abstracts from the SemanticScholar website,
+# %% Export table and manually copy abstracts from the SemanticScholar website,
 # following the links in the "url" column. Takes about 15 minutes.
+# 
 # empty_abstracts_df.to_csv("data/empty_abstracts_df.csv")
 
+# % Use the manually fetched abstracts to refine author selection
 manually_fetched_abstracts_df = (
     pd.read_csv(
         "data/manually_fetched_abstracts_df.csv", sep=";", index_col=0
