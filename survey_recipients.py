@@ -105,6 +105,7 @@ all_abstracts_df = (
 )    
 
 selected_authors_df = all_abstracts_df.query(query_condition)
+# selected_authors_df.to_csv("data/selected_authors.csv", index=False)
 
 # %% Export list of unique names
 selected_names = (
