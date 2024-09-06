@@ -85,7 +85,7 @@ empty_abstracts_df = (
 # 
 # empty_abstracts_df.to_csv("data/empty_abstracts_df.csv")
 
-# % Use the manually fetched abstracts to refine author selection
+# %% Use the manually fetched abstracts to refine author selection
 manually_fetched_abstracts_df = (
     pd.read_csv(
         "data/manually_fetched_abstracts_df.csv", sep=";", index_col=0
@@ -105,3 +105,13 @@ all_abstracts_df = (
 )    
 
 selected_authors_df = all_abstracts_df.query(query_condition)
+
+# %% Export list of unique names
+selected_names = (
+    selected_authors_df
+    .name
+    .dropna()
+    .drop_duplicates()
+)
+
+# selected_names.to_csv("data/list_of_unique_names.csv", index=False)
