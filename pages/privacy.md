@@ -58,7 +58,7 @@ Your *contact information* is stored on Rémi Turquier's personal computer only.
 
 ## How long do we keep your data?
 
-We will delete your *contact information* one month after the form submission deadline at the latest. 
+We will delete your *contact information* one month after the form submission deadline at the latest. Note that the procedure used to collect this data will be made public: as long as your *contact information* is available online, anyone will be able to recover it by reproducing the procedure.
 
 *Survey data* stored by Basin will automatically be deleted manually after we downloaded the full data, or automatically 30 days after you submitted the form.
 
