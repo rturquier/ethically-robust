@@ -5,5 +5,8 @@ __pycache__/
 data
 charts
 
+# python virtual environment
+.venv/
+
 # Caviola et al. (2022) data folder
 osfstorage-archive
