@@ -19,11 +19,11 @@ def create_mailto_url(row, subject, template):
     return f"mailto:{row['email']}?{params}"
 
 
-def create_mailto_list(df, email_subject, email_template):
-    filtered_df = df.query('not exclude')
+def create_mailto_list(contact_df, email_subject, email_template):
+    selected_recipients_df = contact_df.query('not exclude')
     
     result = (
-        filtered_df
+        selected_recipients_df
         .assign(mailto_url=lambda x: x.apply(
             create_mailto_url,
             args=(email_subject, email_template),
@@ -66,4 +66,4 @@ CES, Paris 1 University, and PSE
 
 # %% 
 mailto_list = create_mailto_list(contact_info, email_subject, email_body)
-mailto_list.head().to_csv("data/mailto.csv", index=False, header=False)
+mailto_list.to_csv("data/mailto.csv", index=False, header=False)
