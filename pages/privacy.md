@@ -1,6 +1,6 @@
 # Our Privacy Policy
 
-We, Stéphane Zuber and Rémi Turquier, are affiliated with the Sorbonne Economics Centre (CES), a joint research unit under the supervision of the French National Centre for Scientific (CNRS), Paris 1 Panthéon-Sorbonne University, and the French National Research Institute for Sustainable Development (IRD). We are asking you to answer a [survey on population ethics](https://remi.turquier.fr/ethically-robust/population-ethics-survey). This privacy policy explains how we process your data in the context of this survey.
+We, [Stéphane Zuber](https://sites.google.com/site/stephanezubersite/Home) and [Rémi Turquier](https://remi.turquier.fr/), are affiliated with the Sorbonne Economics Centre (CES), a joint research unit under the supervision of the French National Centre for Scientific (CNRS), Paris 1 Panthéon-Sorbonne University, and the French National Research Institute for Sustainable Development (IRD). We are asking you to answer a [survey on population ethics](https://remi.turquier.fr/ethically-robust/population-ethics-survey). This privacy policy explains how we process your data in the context of this survey.
 
 In short: the form is anonymous, and we will delete the information we used to contact you.
 
@@ -12,7 +12,7 @@ Topics:
 - How do we store your data?
 - How long do we keep your data?
 - What are your data protection rights?
-- Legal basis
+- Lawful basis
 - How to contact us
 - How to contact the appropriate authority
 
@@ -34,7 +34,7 @@ We collect the following data:
 
 Your *contact information* was obtained through the [Semantic Scholar API](https://www.semanticscholar.org/product/api), and manually from the web.
 
-*Survey data* is directly provided by you through the form. When you submit the form, your answers are sent to a third-party, [Basin](https://usebasin.com/). At the end of the data collection period, we will download the data from Basin. [Basin's own privacy policy](https://usebasin.com/privacy) applies to your data while it is stored on their platform.
+*Survey data* is directly provided by you through the form. When you submit the form, your answers are sent to a third-party, [Basin](https://usebasin.com/). At the end of the data collection period, we will download the data from Basin. [Basin's own privacy policy](https://usebasin.com/gdpr#:~:text=Basin%20as%20a%20Data%20Processor) applies to your data while it is stored on their platform.
 
 You have no obligation to fill any of the fields of our form. You will face no negative consequences for not answering a question. 
 
@@ -86,7 +86,7 @@ If you make a request, we have one month to respond to you.
 
 
 
-## Legal basis
+## Lawful basis
 
 Our research project is conducted in the public interest.
 
@@ -103,14 +103,12 @@ If you have any questions about our privacy policy, the data we hold on you, or 
 
 ## How to contact the appropriate authority
 
-If you feel that we have not addressed your concern in a satisfactory manner, you may contact the data protection officer of Paris 1 University:
+If you feel that we have not addressed your concern in a satisfactory manner, you may contact the data protection officer of CNRS at [dpd.demandes@cnrs.fr](mailto:dpd.demandes@cnrs.fr), or by postal mail at this address:  
 
-François Descubes  
-Délégué à la protection des données   
-31, rue Baudricourt 75013 Paris  
-dpo@univ-paris1.fr  
-+33 (0)1 44 07 81 00
-
+  CNRS - Service protection des données  
+  2 rue Jean Zay  
+  54500 Vandoeuvre-lès-Nancy  
+  France.
 
 
 You also have the right to lodge a complaint with a supervisory authority in your EU country of residence, or with the [CNIL](https://www.service-public.fr/particuliers/vosdroits/R18719?lang=en).
