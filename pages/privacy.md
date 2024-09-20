@@ -95,7 +95,12 @@ Our research project is conducted in the public interest.
 
 ## How to contact us
 
-You can reach us at `firstname`.`lastname`@univ-paris1.fr (without diacritics). 
+You can reach us, Rémi Turquier and Stéphane Zuber, at `firstname`.`lastname`@univ-paris1.fr (without diacritics), or by postal mail at this address:
+
+> Centre d'Économie de la Sorbonne  
+> 106-112 bd de l’Hôpital  
+> 75647 Paris Cedex 13  
+> France
 
 If you have any questions about our privacy policy, the data we hold on you, or if you want to exercise one of your data protection rights, please do not hesitate to contact us. 
 
@@ -105,10 +110,10 @@ If you have any questions about our privacy policy, the data we hold on you, or 
 
 If you feel that we have not addressed your concern in a satisfactory manner, you may contact the data protection officer of CNRS at [dpd.demandes@cnrs.fr](mailto:dpd.demandes@cnrs.fr), or by postal mail at this address:  
 
-  CNRS - Service protection des données  
-  2 rue Jean Zay  
-  54500 Vandoeuvre-lès-Nancy  
-  France.
+>   CNRS - Service protection des données  
+>   2 rue Jean Zay  
+>   54500 Vandoeuvre-lès-Nancy  
+>   France.
 
 
 You also have the right to lodge a complaint with a supervisory authority in your EU country of residence, or with the [CNIL](https://www.service-public.fr/particuliers/vosdroits/R18719?lang=en).
