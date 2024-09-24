@@ -32,7 +32,7 @@ We collect the following data:
 
 ## How do we collect your data?
 
-Your *contact information* was obtained through the [Semantic Scholar API](https://www.semanticscholar.org/product/api), and manually from the web.
+Your *contact information* was obtained through the [Semantic Scholar API](https://www.semanticscholar.org/product/api), and manually from the web. You were selected because one of your publications refers to a concept of population ethics.
 
 *Survey data* is directly provided by you through the form. When you submit the form, your answers are sent to a third-party, [Basin](https://usebasin.com/). At the end of the data collection period, we will download the data from Basin. [Basin's own privacy policy](https://usebasin.com/gdpr#:~:text=Basin%20as%20a%20Data%20Processor) applies to your data while it is stored on their platform.
 
@@ -44,7 +44,7 @@ You have no obligation to fill any of the fields of our form. You will face no n
 
 We used your *contact information* to identify you as having relevant expertise, and to be able to contact you. 
 
-*Survey data* will be analysed for an ongoing research project on social discounting and population ethics. It will be made publicly available on an open science platform such as the [OSF](https://osf.io/) or [Zenodo](https://zenodo.org/). If this research project leads to an academic publication, *survey data* will be made available on the publisher's website if required. We want to make this anonymous data publicly available to make our research more transparent and reproducible.
+*Survey data* will be analysed for an ongoing research project on social discounting and population ethics. It will be made publicly available on an open science platform such as the [OSF](https://osf.io/) or [Zenodo](https://zenodo.org/). If this research project leads to an academic publication, *survey data* will be made available on the publisher's website if required. We want to make this anonymous data publicly available to make our research more transparent and reproducible. The purpose of this research is to improve the evaluation of public projects with intergenerational consequences.
 
 
 
@@ -95,7 +95,7 @@ Our research project is conducted in the public interest.
 
 ## How to contact us
 
-You can reach us, Rémi Turquier and Stéphane Zuber, at `firstname`.`lastname`@univ-paris1.fr (without diacritics), or by postal mail at this address:
+You can reach us, Rémi Turquier and Stéphane Zuber, at `remi.turquier` and `stephane.zuber`, both `@univ-paris1.fr`, or by postal mail at this address:
 
 > Centre d'Économie de la Sorbonne  
 > 106-112 bd de l’Hôpital  
