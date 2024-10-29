@@ -1,6 +1,6 @@
 # Our Privacy Policy
 
-We, [Stéphane Zuber](https://sites.google.com/site/stephanezubersite/Home) and [Rémi Turquier](https://remi.turquier.fr/), are affiliated with the Sorbonne Economics Centre (CES), a joint research unit under the supervision of the French National Centre for Scientific (CNRS), Paris 1 Panthéon-Sorbonne University, and the French National Research Institute for Sustainable Development (IRD). We are asking you to answer a [survey on population ethics](https://remi.turquier.fr/ethically-robust/population-ethics-survey). This privacy policy explains how we process your data in the context of this survey.
+We, [Stéphane Zuber](https://sites.google.com/site/stephanezubersite/Home) and [Rémi Turquier](https://remi.turquier.fr/), are affiliated with the Sorbonne Economics Centre (CES, UMR 8174). We are asking you to answer a [survey on population ethics](https://remi.turquier.fr/ethically-robust/population-ethics-survey). This privacy policy explains how we process your data in the context of this survey.
 
 In short: the form is anonymous, and we will delete the information we used to contact you.
 
@@ -50,9 +50,9 @@ We used your *contact information* to identify you as having relevant expertise,
 
 ## How do we store your data?
 
-Your *contact information* is stored on Rémi Turquier's personal computer only. This computer is located in Davis, California, until December 2024, and will then return to Paris, France. It is only used by its owner, locked with a secure password when not in use, and encrypted with [FileVault](https://en.wikipedia.org/wiki/FileVault).
+Your *contact information* is stored on [sdrive](https://ods.cnrs.fr/sdrive.php), an encrypted data server of the National Centre for Scientific Research (CNRS), located in France.
 
-*Survey data* will be temporarily stored by [Basin](https://usebasin.com/), and then downloaded to Rémi Turquier's personal computer. Any identifying information that you might have entered in a text field will be deleted. The anonymous survey data will be transferred to other researchers if needed for the research project. This anonymous data will be made publicly available (see previous section).
+*Survey data* will be temporarily stored by [Basin](https://usebasin.com/), and then downloaded to sdrive. Any identifying information that you might have entered in a text field will be deleted. The anonymous survey data will be transferred to other researchers if needed for the research project. This anonymous data will be made publicly available (see previous section).
 
 
 
@@ -80,7 +80,6 @@ You are entitled to the following:
 
 **The right to object to processing** – You have the right to object to our processing of your personal data.
 
-**The right to data portability** – You have the right to request that we transfer the personal data that we have collected about you to another organization, or directly to you.
 
 If you make a request, we have one month to respond to you.
 
@@ -95,7 +94,7 @@ Our research project is conducted in the public interest.
 
 ## How to contact us
 
-You can reach us, Rémi Turquier and Stéphane Zuber, at `remi.turquier` and `stephane.zuber`, both `@univ-paris1.fr`, or by postal mail at this address:
+The data controller is Stéphane Zuber, director of CES (UMR 8174). You can reach us, Rémi Turquier and Stéphane Zuber, at `remi.turquier` and `stephane.zuber`, both `@univ-paris1.fr`, or by postal mail at this address:
 
 > Centre d'Économie de la Sorbonne  
 > 106-112 bd de l’Hôpital  
