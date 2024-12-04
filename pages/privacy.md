@@ -1,6 +1,6 @@
 # Our Privacy Policy
 
-We, [Stéphane Zuber](https://sites.google.com/site/stephanezubersite/Home) and [Rémi Turquier](https://remi.turquier.fr/), are affiliated with the Sorbonne Economics Centre (CES, UMR 8174). We are asking you to answer a [survey on population ethics](https://remi.turquier.fr/ethically-robust/population-ethics-survey). This privacy policy explains how we process your data in the context of this survey.
+We, [Stéphane Zuber](https://sites.google.com/site/stephanezubersite/Home) and [Rémi Turquier](https://remi.turquier.fr/), are affiliated with the Sorbonne Economics Centre (CES, UMR 8174). We are asking you to answer a [survey on population ethics](https://remi.turquier.fr/ethically-robust/survey-form). This privacy policy explains how we process your data in the context of this survey.
 
 In short: the form is anonymous, and we will delete the information we used to contact you.
 
