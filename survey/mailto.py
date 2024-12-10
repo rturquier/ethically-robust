@@ -42,6 +42,8 @@ contact_info = pd.read_csv("data/recipient_contact_information.csv")
 # %% Set template
 email_subject = "Population ethics expert survey"
 email_body = Path("email.txt").read_text()
+# For the follow-up email, the subject will be: 
+# email_subject = "Population ethics expert survey — Follow-up"
 
 # %% 
 mailto_list = create_mailto_list(contact_info, email_subject, email_body)
