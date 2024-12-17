@@ -23,8 +23,20 @@ def create_mailto_url(row, subject, template):
     return f"mailto:{row['email']}?{params}"
 
 
-def create_mailto_list(contact_df, email_subject, email_template):
+def create_mailto_list(
+    contact_df,
+    email_subject,
+    email_template,
+    email_type="initial"
+):
     selected_recipients_df = contact_df.query('not exclude')
+    if email_type == "follow-up":
+        selected_recipients_df = (
+            selected_recipients_df
+            .fillna(False)
+            .infer_objects()
+            .query('remind')
+        )
     
     result = (
         selected_recipients_df
@@ -35,9 +47,11 @@ def create_mailto_list(contact_df, email_subject, email_template):
         ))
         .mailto_url
     )
-    
     return result
 
+
+# %% Change to email_type to `initial` to generate initial emails
+email_type = "follow-up"  
 
 # %% Read data
 contact_info = pd.read_csv("data/recipient_contact_information.csv")
@@ -45,9 +59,14 @@ contact_info = pd.read_csv("data/recipient_contact_information.csv")
 # %% Set template
 email_subject = "Population ethics expert survey"
 email_body = Path("email.txt").read_text()
-# For the follow-up email, the subject will be: 
-# email_subject = "Population ethics expert survey — Follow-up"
+
+if email_type == "follow-up":
+    email_subject = "Population ethics expert survey — Follow-up"
+    email_body = Path("follow-up.txt").read_text()
 
 # %% 
-mailto_list = create_mailto_list(contact_info, email_subject, email_body)
+mailto_list = create_mailto_list(contact_info,
+                                 email_subject,
+                                 email_body,
+                                 email_type)
 mailto_list.to_csv("data/mailto.csv", index=False, header=False)
