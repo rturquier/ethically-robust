@@ -4,7 +4,10 @@
 """
 Prepare list of mailto URLs to send out survey
 
-Run `open $(cat data/mailto.csv)` to open all exported URLs.
+To open all exported URLs, run:
+```sh
+for line in $(cat mailto.csv) ; do open "${line}" ; done
+```
 """
 
 # %% Imports
