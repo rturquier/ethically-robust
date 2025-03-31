@@ -1,0 +1,28 @@
+---
+title: Population ethics survey
+subtitle: Detailed analysis
+authors:
+  - name: Rémi Turquier
+    affiliations: CES, Paris 1, PSE
+  - name: Stéphane Zuber
+    affiliations: CES, Paris 1, PSE, CNRS
+bibliography: bibliography.bib
+date: today
+published-title: Date
+include-in-header:
+  text: |
+    <style>
+        div.references .csl-entry {
+            margin-bottom: 0.2em;
+        }
+    </style>
+from: markdown+lists_without_preceding_blankline
+embed-resources: true
+---
+
+```{python}
+import pandas as pd
+
+df = pd.read_csv("data/results/2025-01-14-basin-export.csv")
+df.head(10)
+```
