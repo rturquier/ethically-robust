@@ -6,7 +6,7 @@ authors:
     affiliations: CES, Paris 1, PSE
   - name: Stéphane Zuber
     affiliations: CES, Paris 1, PSE, CNRS
-bibliography: bibliography.bib
+# bibliography: bibliography.bib
 date: today
 published-title: Date
 include-in-header:
@@ -17,12 +17,30 @@ include-in-header:
         }
     </style>
 from: markdown+lists_without_preceding_blankline
+html:
+    code-fold: true
 embed-resources: true
 ---
+
+Let's first combine the two basin exports.
 
 ```{python}
 import pandas as pd
 
-df = pd.read_csv("data/results/2025-01-14-basin-export.csv")
-df.head(10)
+df_1 = pd.read_csv("data/results/2024-12-25-basin-export.csv")
+df_2 = pd.read_csv("data/results/2025-01-14-basin-export.csv")
+
+df_merged = (
+  pd.concat([df_2, df_1])
+  .drop_duplicates("id")
+)
+
+# there was only 1 answer after the first export
+# the combined dataframe is just 1 line longer than the first dataframe
+assert len(df_merged) == len(df_1) + 1 
+
+# Save
+df_merged.to_csv("data/results/full-basin-export.csv", index=False)
+
+df_merged.head(3)
 ```
