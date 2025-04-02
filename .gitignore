@@ -10,3 +10,6 @@ charts
 
 # Caviola et al. (2022) data folder
 osfstorage-archive
+
+# quarto render
+survey/analysis.html
