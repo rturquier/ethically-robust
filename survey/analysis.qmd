@@ -9,37 +9,38 @@ authors:
 # bibliography: bibliography.bib
 date: today
 published-title: Date
-include-in-header:
-  text: |
-    <style>
-        div.references .csl-entry {
-            margin-bottom: 0.2em;
-        }
-    </style>
-from: markdown+lists_without_preceding_blankline
-html:
+format:
+  html:
     code-fold: true
+    code-summary: Show code
+    embed-resources: true
 ---
 
-Let's first combine the two basin exports.
+As part of our research project on moral uncertainty in social discounting, we conducted an expert survey on questions of population ethics. This [quarto](https://quarto.org/) notebook provides a detailed analysis of the survey results.
 
+## Data cleaning and descriptive statistics
+We start by reading the data. As said in our [preregistration](https://osf.io/fx75c), we exclude answers submitted after the closing date of the survey. Here is a random line from the data:
 ```{python}
 import pandas as pd
 
-df_1 = pd.read_csv("data/results/2024-12-25-basin-export.csv")
-df_2 = pd.read_csv("data/results/2025-01-14-basin-export.csv")
-
-df_merged = (
-  pd.concat([df_2, df_1])
-  .drop_duplicates("id")
+df = (
+  pd.read_csv("data/results/full-basin-export.csv")
+  .rename(columns={"created_at": "timestamp"})
+  .astype(dtype={
+    "timestamp": pd.DatetimeTZDtype(tz="UTC")
+  })
+  .drop(columns=["remote_ip"])  # IP addresses were not collected.
 )
 
-# there was only 1 answer after the first export
-# the combined dataframe is just 1 line longer than the first dataframe
-assert len(df_merged) == len(df_1) + 1 
+# Survey closing date was 22 December 2024 at midnight, Anywhere on Earth. 
+# The Anywhere on Earth timezone is 12 hours behind UTC.
+closing_date = pd.Timestamp("2024-12-23 12:00:00", tz="UTC")
 
-# Save
-df_merged.to_csv("data/results/full-basin-export.csv", index=False)
+late_answers = df.query("timestamp > @closing_date")
+df = df.query("timestamp <= @closing_date")
 
-df_merged.head(3)
+df.sample(1)
 ```
+<br>
+
+Excluding the `{python} len(late_answers)` late form submissions, we recieved `{python} len(df)` answers.
