@@ -19,8 +19,6 @@ include-in-header:
 from: markdown+lists_without_preceding_blankline
 html:
     code-fold: true
-execute: 
-  cache: true
 ---
 
 Let's first combine the two basin exports.
