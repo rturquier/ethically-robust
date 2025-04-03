@@ -13,3 +13,6 @@ osfstorage-archive
 
 # quarto render
 survey/analysis.html
+
+# jupyter cache
+survey/analysis.quarto_ipynb
