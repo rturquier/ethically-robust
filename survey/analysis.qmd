@@ -26,9 +26,7 @@ import pandas as pd
 df = (
   pd.read_csv("data/results/full-basin-export.csv")
   .rename(columns={"created_at": "timestamp"})
-  .astype(dtype={
-    "timestamp": pd.DatetimeTZDtype(tz="UTC")
-  })
+  .astype(dtype={"timestamp": pd.DatetimeTZDtype(tz="UTC")})
   .drop(columns=["remote_ip"])  # IP addresses were not collected.
 )
 
@@ -43,4 +41,32 @@ df.sample(1)
 ```
 <br>
 
-Excluding the `{python} len(late_answers)` late form submissions, we recieved `{python} len(df)` answers.
+Excluding `{python} len(late_answers)` late form submissions, we recieved `{python} len(df)` answers.
+
+```{python}
+import altair as alt
+
+discipline_counts = (
+    df['discipline']
+    .fillna("no answer")
+    .value_counts()
+    .reset_index()
+    .sort_values('count')
+    .assign(percentage=lambda x: 100 * x['count'] / sum(x['count']))
+)
+
+discipline_counts['label'] = discipline_counts.apply(
+    lambda row: f"{row['discipline']} ({row['count']})",
+    axis=1
+)
+
+alt.Chart(discipline_counts).mark_bar(size=35).encode(
+    x=alt.X('count:Q').axis(None),
+    color=alt.Color(
+        'label', title=None, sort='-x'
+    ).legend(
+        orient="bottom", symbolType="circle"
+    ),
+    order=alt.Order('count', sort="descending")
+)
+```
