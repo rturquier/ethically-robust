@@ -41,7 +41,7 @@ df.sample(1)
 ```
 <br>
 
-Excluding `{python} len(late_answers)` late form submissions, we recieved `{python} len(df)` answers.
+Excluding `{python} len(late_answers)` late form submissions, we recieved `{python} len(df)` answers. Philosophy was the most represented discipline with 46 answers (71%). Eleven people (17%) said their main discipline was economics. Five people chose "other", and three respondant left this question blank.
 
 ```{python}
 import altair as alt
