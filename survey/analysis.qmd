@@ -86,13 +86,19 @@ discipline_counts['label'] = discipline_counts.apply(
     axis=1
 )
 
-alt.Chart(discipline_counts).mark_bar(size=35).encode(
-    x=alt.X('count:Q').axis(None),
-    color=alt.Color(
-        'label', title=None, sort='-x'
-    ).legend(
-        orient="bottom", symbolType="circle"
-    ),
-    order=alt.Order('count', sort="descending")
+discipline_chart = (
+    alt.Chart(discipline_counts)
+    .mark_bar(size=35)
+    .encode(
+        x=alt.X('count:Q').axis(None),
+        color=alt.Color(
+            'label', title=None, sort='-x'
+        ).legend(
+            orient="bottom", symbolType="circle"
+        ),
+        order=alt.Order('count', sort="descending")
+    )
+    .properties(width=330)
 )
+discipline_chart
 ```
