@@ -16,9 +16,35 @@ format:
     embed-resources: true
 ---
 
-As part of our research project on moral uncertainty in social discounting, we conducted an expert survey on questions of population ethics. This [quarto](https://quarto.org/) notebook provides a detailed analysis of the survey results.
+As part of our research project on moral uncertainty in social discounting, we conducted an expert survey on questions of population ethics. This [quarto](https://quarto.org/) notebook provides details on the methods we used, and a detailed analysis of the survey results.
 
-## Data cleaning and descriptive statistics
+## Methodology
+### Expert selection
+To identify recipients of our survey, we looked for authors or co-authors of at least one academic article, book, book chapter or book review, published after January 2000, on the topic of population ethics. We considered that a publication was about population ethics when one of the following concepts was mentioned in its title or abstract: “population ethics”, “total utilitarianism”, “average utilitarianism”, or “repugnant conclusion”. This search was performed with the SemanticScholar API on September 5, 2024. We filtered the results a second time with python to exclude publications that only matched the query because of punctuation (“…a sentence ending with the word population. Ethics is the first word of the next sentence…”). We exported a first selection of 517 publications, associated with 305 author names.
+
+We refined this first selection manually, checking each author individually. We excluded 99 authors in this step. Some exclusions were due to the imperfect quality of the Semantic Scholar database: duplicate names (16 exclusions), mismatched abstracts (11), absence of any document with this title (6) and by this author (1). Unpublished preprints (11), theses (8), presentation summaries or conference papers (6), or other pdf documents (3) did not match our publication criterion. We also considered that editorials (10) and short dictonary or encyclopedic entries (3) were not sufficient on their own to demonstrate expertise.
+
+Thirteen publications were excluded because they were not actually about population ethics. The terms “population ethics” and “repugnant conclusion” were sometimes used in a general way, without referring to the precise philosophical concepts we were interested in (3). Some book reviews mentioned population ethics, but the books they reviewed were about a different topic (3). In 7 other cases, “population ethics” or “total utilitarianism” were only mentioned in passing, with no paragraph dedicated to these topics in the body of the article. Of the remaining relevant authors, 4 were deceased. We were unable to find an email address for 7 others. Finally, 5 authors were added to the initial list as contributors to the Oxford Handbook of Population Ethics [@arrhenius2022], which had no associated author in the Semantic Scholar query result.
+
+We sent the survey link over email to the 211 authors of our final selection. Most of them are philosophers (134). Economics is the second most represented discipline (46). Other represented fields include demography, political science, psychology, law, sociology, climate science, and public health. Several profiles were too interdisciplinary to be associated with one discipline rather than another. All names, emails, and publication information used to select recipients were deleted on 28 March 2025.
+
+### Emails
+The initial 211 emails were sent on 10 December 2024, between 3:27 and 9:24 am (CET). We accidentally sent the email twice to one person. We received 14 mail delivery errors, and 7 automatic replies indicating that this mailbox was not being checked regularly. We were able to resend the survey to 17 of these 21 recipients. The last of these emails was sent at 0:28 am on 12 December (CET). We were unable to find a functioning email address for the remaining 4. Five automatic replies indicated that the person was away (1), busy (3) or retired (1). Two people wrote back to say that they lacked relevant expertise. Another 8 people replied to say that they submitted an answer, some adding comments about their answer or the survey itself (5), others expressing interest in hearing about the results (3).
+
+On Tuesday 17 December, we sent a follow-up email, as planned in our preregistration. The follow-up was sent to all survey recipients for whom we had a functioning email address, except to the 10 people who had replied to the initial email. The follow-up emails were sent between 22:21 and 23:47 (CET). We received 19 replies after the follow-up. Three automatic replies indicated that the person was busy, away or retired. Four people said they had not filled the form: two said they lacked expertise, one, that the survey was not adapted to negative utilitarianism, and one replied on December 30 that they had missed the emails. Four people said they filled the form, and four others said they had already filled it before. Three additional people said they were currently busy, but wanted to try to answer before the deadline. One person flagged a minor typo in the form, which we quickly corrected (commit [91e72d3](https://github.com/rturquier/ethically-robust/commit/91e72d37c341a209615c88ab7c5a982952f9140f?diff=unified)).
+
+Seven emails contained comments about the survey. We report these comments, anonymized, in the project files [point to file]. 
+
+### An error in the form
+On 17 December, before we sent the follow-up, we received an email reporting a mistake in questions 4 and 5 of part 2:
+
+> I think there's a minor error in part 2, question 4. It says "100,000,000,000 (1 Billion)" but 100,000,000,000 is 100 billion. My answer would be the same no matter which is meant. The same is true of question 5.
+
+We corrected the mistake before sending the follow-up (commit [4245f1e](https://github.com/rturquier/ethically-robust/commit/4245f1e276cfafc408ee63ff2a092febc2a9e174?diff=unified)). None of the 40 to 42 previous respondents raised this issue, nor did any of the participants to the beta version of the survey. We think that most participants skipped the digits (100,000,000,000) and read the number in words (1 Billion), or that their answer would have been the same either way. 
+
+
+## Results
+### Data cleaning and descriptive statistics
 We start by reading the data. As said in our [preregistration](https://osf.io/fx75c), we exclude answers submitted after the closing date of the survey. Here is a random line from the data:
 ```{python}
 import pandas as pd
