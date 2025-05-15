@@ -7,6 +7,9 @@ charts
 
 # python virtual environment
 .venv/
+pyvenv.cfg
+bin
+lib
 
 # Caviola et al. (2022) data folder
 osfstorage-archive
