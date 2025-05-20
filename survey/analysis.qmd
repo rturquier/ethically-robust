@@ -14,6 +14,10 @@ format:
     code-fold: true
     code-summary: Show code
     embed-resources: true
+    include-in-header:
+      - text: "<style>
+          .cell-output-display .vega-embed .chart-wrapper {margin: auto;}
+          </style>"
 ---
 
 As part of our research project on moral uncertainty in social discounting, we conducted an expert survey on questions of population ethics. This [quarto](https://quarto.org/) notebook provides details on the methods we used, and a detailed analysis of the survey results.
