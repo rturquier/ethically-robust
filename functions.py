@@ -128,7 +128,7 @@ def merge_value_frequency(df_x, col_x, df_y, col_y):
         .loc[:, col_y]
         .value_counts(normalize=True)
         .pipe(pd.DataFrame)
-        .rename(columns={col_y: "freq_" + col_y})
+        .rename(columns={'proportion': "freq_" + col_y})
         .merge(df_x, left_index=True, right_on=col_x, how="right")
         .fillna({"freq_" + col_y: 0})
         .reindex(columns=[col_x, "freq_" + col_y])
