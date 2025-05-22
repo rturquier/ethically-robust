@@ -106,3 +106,26 @@ discipline_chart = (
 )
 discipline_chart
 ```
+
+### Part 1
+#### Question 1
+> If you had to choose a single value for $\beta$, what would you recommend?
+```{python}
+base = alt.Chart(df).encode(
+    x=alt.X("beta:Q", bin=alt.Bin(maxbins=20), title="𝛽"),
+    y=alt.Y("count()", title="Count"),
+)
+
+bars = base.mark_bar(fill="#F1875E")
+text = base.mark_text(dy=-7).encode(text="count()")
+
+beta_histogram = (bars + text).properties(
+    width=500,
+    height=300,
+    title=alt.Title("Distribution of answers to question 1.1",
+                    orient="bottom",
+                    offset=10)
+)
+
+beta_histogram
+```
