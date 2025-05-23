@@ -110,6 +110,9 @@ discipline_chart
 ### Part 1
 #### Question 1
 > If you had to choose a single value for $\beta$, what would you recommend?
+
+A majority of the 59 respondants who answered this question chose $\beta = 1$. The next two most frequent answers are $0$ and $0.5$.
+
 ```{python}
 base = alt.Chart(df).encode(
     x=alt.X("beta:Q", bin=alt.Bin(maxbins=20), title="𝛽"),
