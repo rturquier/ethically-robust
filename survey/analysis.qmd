@@ -129,3 +129,8 @@ beta_histogram = (bars + text).properties(
 
 beta_histogram
 ```
+
+There is no obvious pattern by discipline.
+```{python}
+beta_histogram + base.mark_bar().encode(fill="discipline")
+```
