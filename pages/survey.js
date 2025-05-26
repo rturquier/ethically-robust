@@ -4,7 +4,7 @@ import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 /**
  * Convert mean and variance of beta distribution to parameters of beta 
  * distribution.
- * See https://en.wikipedia.org/wiki/Beta_distribution.
+ * See https://en.wikipedia.org/wiki/Beta_distribution#Mean_and_variance.
  */
 function momentsToParameters(mean, variance){
     const commonFactor = (mean * (1 - mean)) / variance - 1;

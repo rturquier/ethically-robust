@@ -54,10 +54,11 @@ We start by reading the data. As said in our [preregistration](https://osf.io/fx
 import pandas as pd
 
 df = (
-  pd.read_csv("data/results/full-basin-export.csv")
-  .rename(columns={"created_at": "timestamp"})
-  .astype(dtype={"timestamp": pd.DatetimeTZDtype(tz="UTC")})
-  .drop(columns=["remote_ip"])  # IP addresses were not collected.
+    pd.read_csv("data/results/full-basin-export.csv")
+    .rename(columns={"created_at": "timestamp"})
+    .rename(columns=lambda x: x.replace("-", "_"))
+    .astype(dtype={"timestamp": pd.DatetimeTZDtype(tz="UTC")})
+    .drop(columns=["remote_ip"])  # IP addresses were not collected.
 )
 
 # Survey closing date was 22 December 2024 at midnight, Anywhere on Earth. 
@@ -136,4 +137,34 @@ beta_histogram
 There is no obvious pattern by discipline.
 ```{python}
 beta_histogram + base.mark_bar().encode(fill="discipline")
+```
+
+#### Question 2
+> If all experts of the subject answered this survey, which distribution would most accurately represent their answers to question 1?
+
+For questions 2 and 3, we first need to convert the mean and standard deviation back to parameters of the beta distribution.
+
+```{python}
+from numpy import vectorize
+
+@vectorize
+def get_beta_parameters_from_moments(mean, variance):
+    """Get parameters of beta distribution from mean and variance
+
+    Formula from wikipedia: https://w.wiki/EHwS.
+    """
+
+    commonFactor = (mean * (1 - mean)) / variance - 1
+    alpha = commonFactor * mean
+    beta = commonFactor * (1 - mean)
+    
+    return alpha, beta
+
+
+df["beliefs_alpha"], df["beliefs_beta"] = get_beta_parameters_from_moments(
+    df.beliefs_mean, df.beliefs_sigma**2
+)
+df["others_alpha"], df["others_beta"] = get_beta_parameters_from_moments(
+    df.others_mean, df.others_sigma**2
+)
 ```
