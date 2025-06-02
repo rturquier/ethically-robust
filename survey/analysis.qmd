@@ -145,9 +145,9 @@ beta_histogram + base.mark_bar().encode(fill="discipline")
 For questions 2 and 3, we first need to convert the mean and standard deviation back to parameters of the beta distribution.
 
 ```{python}
-from numpy import vectorize
+import numpy as np
 
-@vectorize
+@np.vectorize
 def get_beta_parameters_from_moments(mean, variance):
     """Get parameters of beta distribution from mean and variance
 
@@ -166,5 +166,30 @@ df["beliefs_alpha"], df["beliefs_beta"] = get_beta_parameters_from_moments(
 )
 df["others_alpha"], df["others_beta"] = get_beta_parameters_from_moments(
     df.others_mean, df.others_sigma**2
+)
+```
+
+```{python}
+from scipy import stats
+
+x_axis_resolution = 100
+x_axis_values = np.linspace(0, 1, x_axis_resolution - 1)
+x_axis_df = pd.DataFrame({'x': x_axis_values})
+
+density_df = (
+    df
+    .filter(
+        ['id', 'beliefs_alpha', 'beliefs_beta', 'others_alpha', 'others_beta']
+    )
+    # Use a cross join to add all x-axis values for each (alpha, beta) pair
+    .merge(x_axis_df, how="cross")
+    .assign(
+        others_density=lambda d: stats.beta.pdf(d.x,
+                                                d.others_alpha,
+                                                d.others_beta),
+        beliefs_density=lambda d: stats.beta.pdf(d.x,
+                                                 d.beliefs_alpha,
+                                                 d.beliefs_beta)
+    )
 )
 ```
