@@ -173,7 +173,14 @@ df["others_alpha"], df["others_beta"] = get_beta_parameters_from_moments(
 from scipy import stats
 
 x_axis_resolution = 100
-x_axis_values = np.linspace(0, 1, x_axis_resolution - 1)
+x_axis_step = 1 / x_axis_resolution
+
+# Create x-axis values without 0 and 1 because these values can be outside the
+# support of the beta density.
+x_axis_values = np.linspace(x_axis_step,
+                            1 - x_axis_step,
+                            x_axis_resolution - 2)
+
 x_axis_df = pd.DataFrame({'x': x_axis_values})
 
 density_df = (
