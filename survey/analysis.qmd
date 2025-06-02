@@ -199,4 +199,10 @@ density_df = (
                                                  d.beliefs_beta)
     )
 )
+
+average_density_df = (
+    density_df
+    .groupby('x')
+    .mean()
+)
 ```
