@@ -400,15 +400,3 @@ population_sdr_plot = (
     )
     .properties(width=550, height=300)
 )
-
-# %% Get Formsubmit data
-# api_key = "..."
-request_root = "https://formsubmit.co/api/get-submissions/"
-request_text = request_root + api_key
-request_result = requests.get(request_text)
-print(request_result.text)
-
-# %% Convert json to pandas dataframe
-population_survey_df = pd.json_normalize(request_result.json(), "submissions")
-population_survey_df.columns = (population_survey_df.columns
-                                .str.replace(".+?\.", "", regex=True))
