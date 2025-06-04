@@ -169,6 +169,8 @@ df["others_alpha"], df["others_beta"] = get_beta_parameters_from_moments(
 )
 ```
 
+We can now calculate the average density.
+
 ```{python}
 from scipy import stats
 
@@ -204,5 +206,40 @@ average_density_df = (
     density_df
     .groupby('x')
     .mean()
+    .reset_index()
 )
+
+question_2_chart = (
+    alt.Chart(average_density_df)
+    .mark_line()
+    .encode(
+        x=alt.X('x:Q', title='β'),
+        y=alt.Y('others_density', title='Density')
+    ).properties(
+        width=500,
+        height=300,
+        title="Average density of beliefs about other experts' answers"
+    )
+)
+question_2_chart.show()
+```
+
+#### Question 3
+> Which distribution most accurately represents your own beliefs on the most
+> appropriate value for $\beta$ ?
+
+```{python}
+question_3_chart = (
+    alt.Chart(average_density_df)
+    .mark_line()
+    .encode(
+        x=alt.X('x:Q', title='β'),
+        y=alt.Y('beliefs_density', title='Density')
+    ).properties(
+        width=500,
+        height=300,
+        title="Average density for the most appropriate value for β"
+    )
+)
+question_3_chart.show()
 ```
