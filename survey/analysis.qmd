@@ -174,7 +174,7 @@ We can now calculate the average density.
 ```{python}
 from scipy import stats
 
-x_axis_resolution = 100
+x_axis_resolution = 500
 x_axis_step = 1 / x_axis_resolution
 
 # Create x-axis values without 0 and 1 because these values can be outside the
@@ -187,9 +187,8 @@ x_axis_df = pd.DataFrame({'x': x_axis_values})
 
 density_df = (
     df
-    .filter(
-        ['id', 'beliefs_alpha', 'beliefs_beta', 'others_alpha', 'others_beta']
-    )
+    .filter(['id', 'beta', 'beliefs_alpha', 'beliefs_beta', 'others_alpha',
+             'others_beta'])
     # Use a cross join to add all x-axis values for each (alpha, beta) pair
     .merge(x_axis_df, how="cross")
     .assign(
@@ -211,17 +210,17 @@ average_density_df = (
 
 question_2_chart = (
     alt.Chart(average_density_df)
-    .mark_line()
+    .mark_line(clip=True)
     .encode(
         x=alt.X('x:Q', title='β'),
-        y=alt.Y('others_density', title='Density')
+        y=alt.Y('others_density', title='Density').scale(domainMax=3.5)
     ).properties(
         width=500,
         height=300,
         title="Average density of beliefs about other experts' answers"
     )
 )
-question_2_chart.show()
+question_2_chart
 ```
 
 #### Question 3
@@ -231,15 +230,53 @@ question_2_chart.show()
 ```{python}
 question_3_chart = (
     alt.Chart(average_density_df)
-    .mark_line()
+    .mark_line(clip=True)
     .encode(
         x=alt.X('x:Q', title='β'),
-        y=alt.Y('beliefs_density', title='Density')
-    ).properties(
+        y=alt.Y('beliefs_density', title='Density').scale(domainMax=3.5)
+    )
+    .properties(
         width=500,
         height=300,
         title="Average density for the most appropriate value for β"
     )
 )
-question_3_chart.show()
+question_3_chart
 ```
+
+#### Questions 2 and 3 by answer to question 1
+Do respondents think that other experts would answer differently on average?
+We can look at question 2 (other experts) and 3 (respondent's own beliefs) and separate respondents by whether they are closer to $0$ (average utilitarianism) or $1$ (total utilitarianism) in question 1. 
+
+```{python}
+average_vs_totalist_df = (
+    density_df
+    .query("beta < 0.5 or beta > 0.5")
+    .assign(beta_type=lambda x: np.where(x.beta > 0.5, "β > 0.5", "β < 0.5"))
+    .groupby(['beta_type', 'x'])
+    .mean()
+    .reset_index()
+    .melt(id_vars=['beta_type', 'x'],
+          value_vars=['others_density', 'beliefs_density'],
+          value_name="density",
+          var_name="question")
+    .assign(question=lambda x: x.question.str.replace('_density', ''))
+)
+average_vs_totalist_chart = (
+    alt.Chart(average_vs_totalist_df)
+    .mark_line(clip=True)
+    .encode(
+        x=alt.X('x:Q', title='β'),
+        y=alt.Y('density:Q', title='Density').scale(domainMax=3.5),
+        stroke=alt.StrokeDash('question:N')
+    )
+    .properties(
+        width=300,
+        height=200
+    )   
+    .facet(column='beta_type:N')
+)
+average_vs_totalist_chart
+```
+
+For the 37 people who answered $\beta > 0.5$ in question 1, the average belief density is very similar to the density of expected responses from other experts. This density also matches the average belief density across all respondants. Collectively, the 17 respondents $\beta < 0.5$ anticipated that they would be more averagist than the group, but underestimated to what extent.
