@@ -212,19 +212,6 @@ def make_beta_histogram(processed_df:pd.DataFrame, prefix:str) -> alt.Chart:
     return (histogram + labels)
 
 
-def calibrate_beta_MM(observations):
-    """Calibrate the parameters of the beta distribution on observations
-    
-    Source: https://statproofbook.github.io/P/beta-mome
-    """
-    sample_mean = np.mean(observations)
-    sample_variance = np.var(observations, ddof=1) # unbiased sample variance
-    
-    a = sample_mean * (sample_mean * (1 - sample_mean) / sample_variance  - 1)
-    b = a * (1 / sample_mean - 1)
-    return a, b
-
-
 def ramsey_population_certain(delta=0.01, eta=1, g_c=0.02, g_n=0.02, beta=1):
     discount_rate = (1 + delta) * (1 + g_n)**(-beta) * (1 + g_c)**eta - 1    
     return discount_rate
@@ -310,8 +297,8 @@ beta_histogram_k_m_b = make_beta_histogram(processed_df, "k_m_b")
 upper_bounds = processed_df.loc[:, 'all_upper'].dropna()
 lower_bounds = processed_df.loc[:, 'all_lower'].dropna()
 
-a_lower, b_lower = calibrate_beta_MM(lower_bounds)
-a_upper, b_upper = calibrate_beta_MM(upper_bounds)
+a_lower, b_lower = f.calibrate_beta_MM(lower_bounds)
+a_upper, b_upper = f.calibrate_beta_MM(upper_bounds)
 
 # %% Plot calibrated densities on histogram
 beta_density_df = (

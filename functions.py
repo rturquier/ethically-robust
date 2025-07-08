@@ -243,3 +243,15 @@ def line_chart(df, x, y, x_title=False, y_title=False, x_format="~f",
 
     return chart
 
+
+def calibrate_beta_MM(observations):
+    """Calibrate the parameters of the beta distribution on observations
+    
+    Source: https://statproofbook.github.io/P/beta-mome
+    """
+    sample_mean = np.mean(observations)
+    sample_variance = np.var(observations, ddof=1) # unbiased sample variance
+    
+    a = sample_mean * (sample_mean * (1 - sample_mean) / sample_variance  - 1)
+    b = a * (1 / sample_mean - 1)
+    return a, b
