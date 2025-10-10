@@ -32,7 +32,7 @@ def get_beta_from_indifference(population, utility):
     return beta_indifferent
 
 
-@np.vectorize
+@np.vectorize(otypes=[object])
 def get_beta_interval_from_answer(answer, population, utility):
     beta_indifferent = get_beta_from_indifference(population, utility)
     
