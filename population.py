@@ -336,6 +336,8 @@ beta_calibration_plot
 
 
 # %%  Construct population discount rate dataframe
+a_survey, b_survey = pd.read_csv("data/beta_survey_calibration.csv").iloc[0]
+
 population_sdr_df = (
     pd.DataFrame()
     .assign(
@@ -352,7 +354,12 @@ population_sdr_df = (
             t=x.year,
             a=a_upper,
             b=b_upper
-        )
+        ),
+        sdr_beta_survey=lambda x: ramsey_population_uncertain(
+            t=x.year,
+            a=a_survey,
+            b=b_survey
+        ),
     )
 )
 
@@ -364,6 +371,7 @@ legend_dict = {
     "sdr_uniform": "Uniform uncertainty",
     "sdr_beta_upper": "Beta uncertainty (most totalist)",
     "sdr_totalism": "Totalism",
+    "sdr_beta_survey": "Our survey",
 }
 
 population_sdr_plot = (
@@ -387,3 +395,6 @@ population_sdr_plot = (
     )
     .properties(width=550, height=300)
 )
+
+# population_sdr_plot.save("charts/population_sdr.svg")
+population_sdr_plot

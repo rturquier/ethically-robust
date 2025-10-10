@@ -327,3 +327,11 @@ beta_calibration_chart = (
 beta_calibration_chart
 # beta_calibration_chart.save("charts/beta_calibration.svg")
 ```
+
+This is the calibration we use in the paper.
+```{python}
+# export calibrated parameters `a` and `b` to a file, so it can be read by
+# `population.py`
+with open("data/beta_survey_calibration.csv", "w") as file:
+    file.write(f"a, b\n{a}, {b}")
+```
