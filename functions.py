@@ -92,7 +92,7 @@ def exact_sdf_beta_prime_gamma(tau, g, beta_prime, alpha, beta,
 def x_axis_from_series(series, n_steps_min=200):
     series = series.dropna()
     max_value = series.max()
-    axis = np.linspace(0, max_value, n_steps_min)
+    axis = np.linspace(0, max_value, n_steps_min + 1)
     axis = sorted(set(axis) | set(series))
 
     assert(set(series).issubset(axis))
