@@ -115,12 +115,14 @@ discipline_chart
 A majority of the 59 respondents who answered this question chose $\beta = 1$. The next two most frequent answers are $0$ and $0.5$.
 
 ```{python}
+import colors
+
 base = alt.Chart(df).encode(
     x=alt.X("beta:Q", bin=alt.Bin(maxbins=20), title="𝛽"),
     y=alt.Y("count()", title="Count"),
 )
 
-bars = base.mark_bar(fill="#F1875E")
+bars = base.mark_bar(fill=colors.lighter_red)
 text = base.mark_text(dy=-7).encode(text="count()")
 
 beta_histogram = (bars + text).properties(

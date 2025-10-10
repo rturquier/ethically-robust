@@ -24,6 +24,7 @@ import scipy.stats as stats
 import altair as alt
 
 import functions as f
+import colors
 
 
 # %% Read data from Drupp et al. (2018b)
@@ -117,7 +118,7 @@ density_chart_delta_MLE = (
 density_chart_delta_MM = (
     f.density_chart(df_delta, x="x_delta", freq="freq_delta",
                   pdf="pdf_delta_MM", bin_step=0.005, x_format="~%",
-                  bar_color="#FFE59C", line_color="#FFBB00",
+                  bar_color=colors.lighter_yellow, line_color=colors.yellow,
                   x_title="", y_title="density"
                  )
     # .properties(title={"text": "Distribution of beliefs over \u03b4",
@@ -143,8 +144,8 @@ density_chart_eta_MLE = (
 
 density_chart_eta_MM = (
     f.density_chart(df_eta, x="x_eta", freq="freq_eta", pdf="pdf_eta_MM",
-                  bin_step=0.5, bar_color="#FFD49B", line_color="#F90",
-                  x_title="", y_title="")
+                  bin_step=0.5, bar_color=colors.lighter_orange,
+                  line_color=colors.orange, x_title="", y_title="")
     # .properties(title={"text": "Distribution of beliefs over \u03b7",
     #                    "subtitle": "Fit with method of moments"})
     .configure_axisY(labels=False, ticks=False, grid=False, domain=False)
@@ -224,7 +225,9 @@ sdr_chart = (
         y_format="%"
     )
     .properties(width=475, height=265)
-    .configure_range(category=["#1999DE", "#6BAFE0", "#6BAFE0"])
+    .configure_range(category=
+            [colors.blue, colors.light_blue, colors.light_blue]
+    )
     .configure_axisY(grid=False, tickCount=5)
     .configure_axisX(grid=False, tickCount=6)
     .configure_view(strokeWidth=0)
@@ -259,7 +262,7 @@ legend_dict = {
         y_format="%"
     )
     .properties(width=600, height=300)
-    .save("charts/social_discount_factor.svg")
+    # .save("charts/social_discount_factor.svg")
 )
 
 # %% plot ratio of factors
@@ -273,5 +276,5 @@ legend_dict = {
         color="#b12447"
     )
     .properties(width=600, height=300)
-    .save("charts/discount_factor_ratio.svg")
+    # .save("charts/discount_factor_ratio.svg")
 )

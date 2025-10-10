@@ -19,7 +19,7 @@ import numpy as np
 import portion as intervals
 import altair as alt
 import scipy as sp
-import requests
+import colors
 
 import functions as f
 
@@ -183,7 +183,7 @@ def make_beta_histogram(processed_df:pd.DataFrame, prefix:str) -> alt.Chart:
 
     histogram = (
         chart_base
-        .mark_rect(fill="#F1875E")
+        .mark_rect(fill=colors.lighter_red)
         .encode(
             x=prefix + '_lower',
             x2=prefix + '_upper',
@@ -313,7 +313,7 @@ beta_density_lower_line = f.line_chart(
     beta_density_df,
     x='x',
     y='beta_lower',
-    color="#008B8B",
+    color=colors.red,
     x_title=""
 )
 
@@ -321,7 +321,7 @@ beta_density_upper_line = f.line_chart(
     beta_density_df,
     x='x',
     y='beta_upper',
-    color="#8018BF",
+    color=colors.red,
     strokeDash=[5,2],
     x_title=""
 )
