@@ -296,4 +296,34 @@ There are three ways we can calibrate a beta distribution on answers for $\beta$
 import functions as f
 
 a, b = f.calibrate_beta_MM(df.beta)
+
+beta_calibration_df = pd.DataFrame({'x_beta': f.x_axis_from_series(df.beta)})
+
+beta_calibration_df = f.merge_value_frequency(beta_calibration_df, 'x_beta',
+                                              df, 'beta')
+beta_calibration_df = beta_calibration_df.assign(
+    pdf_beta=lambda r: stats.beta(a, b).pdf(r.x_beta),
+)
+
+beta_calibration_chart = (
+    f.density_chart(
+        beta_calibration_df,
+        x="x_beta",
+        freq="freq_beta",
+        pdf="pdf_beta",
+        bin_step=0.05,
+        bar_color=colors.lighter_red,
+        line_color=colors.red,
+        x_title="β"
+    )
+    .properties(
+        width=500,
+        height=300,
+    )
+    .configure_axisY(labels=True, ticks=True, grid=False)
+    .configure_view(strokeWidth=0)
+)
+
+beta_calibration_chart
+# beta_calibration_chart.save("charts/beta_calibration.svg")
 ```
