@@ -281,7 +281,7 @@ average_vs_totalist_chart = (
 average_vs_totalist_chart
 ```
 
-For the 37 people who answered $\beta > 0.5$ in question 1, the average belief density is very similar to the density of expected responses from other experts. This density also matches the average belief density across all respondents. Collectively, the 17 respondents wi $\beta < 0.5$ anticipated that they would be more averagist than the group, but underestimated to what extent.
+For the 37 people who answered $\beta > 0.5$ in question 1, the average belief density is very similar to the density of expected responses from other experts. This density also matches the average belief density across all respondents. Collectively, the 17 respondents with $\beta < 0.5$ anticipated that they would be more averagist than the group, but underestimated to what extent.
 
 ### Calibrating a beta distribution
 There are three ways we can calibrate a beta distribution on answers for $\beta$ in this survey:
